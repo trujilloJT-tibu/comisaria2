@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA INTEGRAL - COMISARÍA 2da ROSARIO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --primary: #0a192f;
+            --accent: #1e3a8a;
+            --text: #e2e8f0;
+            --border: #334155;
+            --success: #059669;
+            --warning: #ca8a04;
+        }
+
+        /* DISEÑO DE PANTALLA */
+        @media screen {
+            * { box-sizing: border-box; text-transform: uppercase; }
+            body {
+                background-color: var(--primary);
+                color: var(--text);
+                font-family: 'Segoe UI', Tahoma, sans-serif;
+                margin: 0; padding: 20px;
+                display: flex; flex-direction: column; align-items: center;
+            }
+            .container {
+                width: 95%; max-width: 1200px;
+                background: rgba(15, 23, 42, 0.95);
+                padding: 30px; border-radius: 12px;
+                border: 1px solid var(--border);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            }
+            h1 { text-align: center; color: #3b82f6; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+            .section-title {
+                background: var(--accent); padding: 12px; margin-top: 25px;
+                border-radius: 5px; font-weight: bold; border-left: 5px solid #3b82f6;
+            }
+            .grid-form {
+                display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 15px; margin-top: 15px;
+            }
+            .form-group { display: flex; flex-direction: column; }
+            label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px; font-weight: 600; }
+            input, select, textarea {
+                background: #1e293b; border: 1px solid var(--border);
+                color: white; padding: 12px; border-radius: 6px;
+                font-size: 0.95rem; transition: all 0.3s;
+            }
+            input:focus, textarea:focus { border-color: #3b82f6; outline: none; background: #26334d; }
+            .full-row { grid-column: 1 / -1; }
+            textarea { min-height: 100px; resize: vertical; }
+
+            .print-panel {
+                background: #1e3a8a; padding: 25px; border-radius: 10px;
+                margin-top: 30px; border: 2px solid #3b82f6;
+                display: flex; flex-direction: column; align-items: center;
+            }
+            .button-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            button {
+                cursor: pointer; padding: 12px 20px; border: none; border-radius: 6px;
+                font-weight: bold; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+            }
+            button:hover { transform: translateY(-2px); filter: brightness(1.2); }
+            .btn-save { background: var(--success); color: white; }
+            .btn-blue { background: #3b82f6; color: white; }
+            .btn-orange { background: #f59e0b; color: white; }
+            .btn-purple { background: #8b5cf6; color: white; }
+            .btn-pink { background: #db2777; color: white; }
+            /* Estilo para botones nuevos adicionales */
+            .btn-new { background: #475569; color: white; border: 1px solid #94a3b8; }
+            
+            table { width: 100%; border-collapse: collapse; margin-top: 30px; background: #0f172a; border-radius: 8px; overflow: hidden; }
+            th { background: #1e3a8a; color: white; padding: 15px; text-align: left; }
+            td { padding: 12px; border-bottom: 1px solid var(--border); }
+            tr:hover { background: #1e293b; }
+            #printArea { display: none; }
+        }
+
+        /* DISEÑO DE IMPRESIÓN */
+        @media print {
+            @page { size: A4; margin: 0; }
+            body * { visibility: hidden; text-transform: uppercase; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea {
+                display: block !important;
+                position: absolute; left: 0; top: 0; width: 100%;
+                color: black; background: white; padding: 0;
+            }
+
+            .print-ficha {
+                padding-top: 1cm; margin-left: 6.5cm; width: 8cm;
+                text-align: center; font-family: "Courier New", monospace;
+                font-size: 11pt; line-height: 1.4; font-weight: bold;
+            }
+            .print-ficha div { min-height: 1.2em; margin-bottom: 2px; }
+
+            .print-doc {
+                padding: 1.5cm 2.2cm; font-family: Arial, Helvetica, sans-serif;
+                font-size: 11pt; line-height: 1.5; color: black;
+            }
+            .p-fecha { text-align: right; margin-bottom: 35px; }
+            .p-ref { display: flex; justify-content: space-between; margin-bottom: 35px; font-weight: bold; }
+            .p-cuerpo { text-align: justify; text-indent: 5cm; margin-bottom: 20px; }
+            .p-firma { margin-top: 60px; text-align: right; font-weight: bold; line-height: 1.2; }
+            
+            .print-acta {
+                padding: 1.2cm 2cm; font-family: "Times New Roman", Times, serif;
+                font-size: 10.5pt; text-align: justify; text-transform: none; line-height: 1.3;
+            }
+            .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 13pt; margin-bottom: 15px; }
+            .acta-punto { margin-bottom: 8px; padding-left: 10px; }
+
+            .planilla-linea { border-bottom: 1px solid black; display: inline-block; min-width: 280px; text-transform: uppercase; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>✙ COMISARÍA 2da URII - ROSARIO ✙</h1>
+        
+        <form id="registroForm">
+            <div class="section-title">👤 IDENTIDAD DEL DEMORADO</div>
+            <div class="grid-form">
+                <div class="form-group"><label>Nombre y Apellido</label><input type="text" id="nombreCompleto"></div>
+                <div class="form-group"><label>Apodo / Alias</label><input type="text" id="apodo" value="NO TIENE"></div>
+                <div class="form-group"><label>DNI / Documento</label><input type="text" id="dni"></div>
+                <div class="form-group"><label>Hijo de (Padre)</label><input type="text" id="padre"></div>
+                <div class="form-group"><label>Hijo de (Madre)</label><input type="text" id="madre"></div>
+                <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fechaNac"></div>
+                <div class="form-group"><label>Edad</label><input type="text" id="edad"></div>
+                <div class="form-group"><label>Estado Civil</label><input type="text" id="estadoCivil" value="SOLTERO"></div>
+                <div class="form-group"><label>Nacionalidad</label><input type="text" id="nacionalidad" value="ARGENTINO"></div>
+                <div class="form-group"><label>Domicilio Real</label><input type="text" id="domicilio"></div>
+                <div class="form-group"><label>Ciudad</label><input type="text" id="ciudad" value="ROSARIO"></div>
+                <div class="form-group"><label>Provincia</label><input type="text" id="provincia" value="SANTA FE"></div>
+            </div>
+
+            <div class="section-title">⚖️ DATOS DE LA CAUSA Y BIENES</div>
+            <div class="grid-form">
+                <div class="form-group full-row"><label>Antecedentes Penales</label><textarea id="antecedentes"></textarea></div>
+                <div class="form-group full-row"><label>Capturas y Paraderos</label><textarea id="capturas"></textarea></div>
+                
+                <div class="form-group"><label>Causa por la que lo traen</label><input type="text" id="causaIngreso"></div>
+                <div class="form-group"><label>Calificación Legal Final (Causa)</label><input type="text" id="causaFinal"></div>
+                
+                <div class="form-group"><label>Nombre Víctima</label><input type="text" id="victima" value="LA SOCIEDAD"></div>
+                <div class="form-group"><label>Domicilio Víctima</label><input type="text" id="domicilioVictima"></div>
+                
+                <div class="form-group full-row"><label>Secuestro</label><textarea id="secuestro"></textarea></div>
+                <div class="form-group full-row"><label>Pertenencias</label><textarea id="pertenencias"></textarea></div>
+
+                <div class="form-group"><label>Número de Causa / CUIJ</label><input type="text" id="nroCausa"></div>
+                <div class="form-group"><label>Número de Prio</label><input type="text" id="nroPrio"></div>
+                <div class="form-group"><label>Fiscalía Interviniente</label><input type="text" id="fiscalia"></div>
+                <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
+                <div class="form-group"><label>Oficial Sumariante</label><input type="text" id="sumariante" value="SUB OFICIAL TRUJILLO"></div>
+                <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="QUEDA DETENIDO"></div>
+            </div>
+
+            <div class="print-panel">
+                <div class="button-group">
+                    <button type="button" class="btn-save" onclick="guardarDato()">💾 GUARDAR</button>
+                    <button type="button" class="btn-blue" onclick="imprimir('ficha')">🖨️ FICHA</button>
+                    <button type="button" class="btn-orange" onclick="imprimir('planilla')">📝 PLANILLA</button>
+                    <button type="button" class="btn-purple" onclick="imprimir('cotejo')">📄 COTEJO</button>
+                    <button type="button" class="btn-pink" onclick="imprimir('insercion')">📥 INSERCIÓN</button>
+                    <button type="button" class="btn-blue" onclick="imprimir('acta')">📜 DERECHOS</button>
+                    
+                    <button type="button" class="btn-new" onclick="imprimir('const_domicilio')">🏠 CONST. DOM.</button>
+                    <button type="button" class="btn-new" onclick="imprimir('prohibicion')">🚫 PROHIBICION</button>
+                    <button type="button" class="btn-new" onclick="imprimir('entrega_rodado')">🏍️ ENT. RODADO</button>
+                    <button type="button" class="btn-new" onclick="imprimir('nota_medico')">⚕️ NOTA MEDICO</button>
+                    <button type="button" class="btn-new" onclick="imprimir('notificacion')">🔔 NOTIFICACION</button>
+                    <button type="button" class="btn-new" onclick="imprimir('entrega_pert')">📦 ENT. PERTEN.</button>
+
+                    <button type="button" class="btn-save" onclick="exportarExcel()">📊 EXCEL</button>
+                </div>
+                <button type="button" onclick="limpiar()" style="margin-top:15px; background:#475569; color:white;">🧹 LIMPIAR</button>
+            </div>
+        </form>
+
+        <table id="tablaRegistros">
+            <thead>
+                <tr>
+                    <th>APREHENDIDO</th>
+                    <th>DNI</th>
+                    <th>DELITO</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTabla"></tbody>
+        </table>
+    </div>
+
+    <div id="printArea"></div>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('com2da_final_db')) || [];
+        let indexEdit = null;
+
+        function guardarDato() {
+            const campos = document.querySelectorAll('#registroForm input, #registroForm textarea');
+            const r = {};
+            campos.forEach(c => r[c.id] = c.value.toUpperCase());
+            
+            if(indexEdit !== null) db[indexEdit] = r; else db.push(r);
+            
+            localStorage.setItem('com2da_final_db', JSON.stringify(db));
+            renderTabla();
+            alert("REGISTRO GUARDADO CON ÉXITO");
+        }
+        function eliminarDato(i) {
+            if(confirm("¿ESTÁ SEGURO QUE DESEA ELIMINAR ESTE REGISTRO?")) {
+                db.splice(i, 1);
+                localStorage.setItem('com2da_db', JSON.stringify(db));
+                renderTabla();
+                indexEdit = null;
+            }
+        }
+        function renderTabla() {
+    const tbody = document.getElementById('cuerpoTabla');
+    tbody.innerHTML = db.map((r, i) => `
+        <tr>
+            <td>${r.nombreCompleto}</td>
+            <td>${r.dni}</td>
+            <td>${r.causaFinal}</td>
+            <td>
+                <button onclick="cargar(${i})" style="background:var(--warning); color:white; padding:5px 10px;">EDITAR</button>
+                <button onclick="eliminarDato(${i})" style="background:#dc2626; color:white; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+        function cargar(i) {
+            indexEdit = i;
+            const r = db[i];
+            Object.keys(r).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = r[k]; });
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function limpiar() { document.getElementById('registroForm').reset(); indexEdit = null; }
+
+        function fF(f) { return f ? f.split('-').reverse().join('/') : ""; }
+        
+        function getHoy() {
+            const d = new Date();
+            const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            return `ROSARIO, ${d.toLocaleDateString('es-AR', opciones)}`.toUpperCase();
+        }
+
+        function imprimir(tipo) {
+            const r = indexEdit !== null ? db[indexEdit] : db[db.length - 1];
+            if(!r) return alert("PRIMERO GUARDE O SELECCIONE UN REGISTRO");
+            
+            const area = document.getElementById('printArea');
+            const fechaN = fF(r.fechaNac);
+            const fechaA = fF(r.fechaApreh);
+            const hoy = getHoy();
+
+            if(tipo === 'ficha') {
+                area.innerHTML = `
+                    <div class="print-ficha">
+                        <div>${r.nombreCompleto}</div><div style="margin-bottom:1.5em"></div>
+                        <div>${r.padre}</div><div>${r.madre}</div>
+                        <div>${r.nacionalidad}</div><div>${r.provincia}</div>
+                        <div>${r.ciudad}</div><div>${fechaN} &nbsp; ${r.edad} AÑOS</div>
+                        <div>D.N.I. Nº ${r.dni}</div><div style="margin-bottom:1.5em"></div>
+                        <div>${r.domicilio}</div>
+                    </div>`;
+            }
+            else if(tipo === 'planilla') {
+                area.innerHTML = `
+                    <div class="print-doc">
+                        <div class="p-fecha">${hoy}</div>
+                        <h2 style="text-align:center; text-decoration:underline; margin-bottom:30px">PLANILLA DE FILIACION PRONTUARIAL</h2>
+                        <p><strong>APELLIDO Y NOMBRES:</strong> <span class="planilla-linea">${r.nombreCompleto}</span></p>
+                        <p><strong>APODO / ALIAS:</strong> <span class="planilla-linea">${r.apodo}</span></p>
+                        <p><strong>HIJO DE (PADRE):</strong> <span class="planilla-linea">${r.padre}</span></p>
+                        <p><strong>HIJO DE (MADRE):</strong> <span class="planilla-linea">${r.madre}</span></p>
+                        <p><strong>NACIONALIDAD:</strong> <span class="planilla-linea">${r.nacionalidad}</span></p>
+                        <p><strong>ESTADO CIVIL:</strong> <span class="planilla-linea">${r.estadoCivil}</span></p>
+                        <p><strong>FECHA DE NACIMIENTO:</strong> <span class="planilla-linea">${fechaN}</span></p>
+                        <p><strong>EDAD:</strong> <span class="planilla-linea">${r.edad} AÑOS</span></p>
+                        <p><strong>DOMICILIADO EN CALLE:</strong> <span class="planilla-linea">${r.domicilio}</span></p>
+                        <p><strong>DOCUMENTO TIPO:</strong> <span class="planilla-linea">D.N.I N° ${r.dni}</span></p>
+                        <p><strong>PRIO N°:</strong> <span class="planilla-linea">${r.nroPrio}</span></p>
+                        
+                        <div style="margin-top:20px"><strong>CAPTURAS Y/O PARADEROS:</strong>
+                            <pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase; width: 100%; display: block;">${r.capturas}</pre>
+                        </div>
+                        <div style="margin-top:20px"><strong>ANTECEDENTES PENALES:</strong>
+                            <pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase; width: 100%; display: block;">${r.antecedentes}</pre>
+                        </div>
+                        
+                        <p style="font-size:10pt; margin-top:40px"><strong>NOTA:</strong> DATOS SUMINISTRADOS VIA TELEFONICA POR OFICINA 10 PDI.</p>
+                        <div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div>
+                    </div>`;
+            }
+            else if(tipo === 'cotejo') {
+                area.innerHTML = `
+                    <div class="print-doc">
+                        <div class="p-fecha">${hoy}.-</div>
+                        <p><strong>SEÑOR JEFE DE DACTILOSCOPIA<br>DIVISION CRIMINALISTICA - UNIDAD REGIONAL II</strong><br>S________________/___________________D</p>
+                        <div class="p-ref">
+                            <div>A.U.O.P.- CRÍA. 2°<br>NOTA Nº ________/26-</div>
+                            <div>OBJETO: COTEJO DE FICHAS</div>
+                        </div>
+                        <div class="p-cuerpo">POR MEDIO DE LA PRESENTE, REMITO A UD. UN JUEGO DE FICHAS DACTILOSCÓPICAS DE QUIEN DICE LLAMARSE <strong>${r.nombreCompleto}</strong>, DE NACIONALIDAD <strong>${r.nacionalidad}</strong>, NACIDO EL DÍA <strong>${fechaN}</strong>, DE <strong>${r.edad} AÑOS</strong> DE EDAD, TITULAR DEL D.N.I. Nº <strong>${r.dni}</strong>, HIJO DE <strong>${r.padre}</strong> Y DE <strong>${r.madre}</strong>, CON DOMICILIO EN CALLE <strong>${r.domicilio}</strong> DE LA CIUDAD DE <strong>${r.ciudad}</strong>, PROVINCIA DE <strong>${r.provincia}</strong>, A LOS FINES DE QUE SE REALICE EL CORRESPONDIENTE <strong>COTEJO DE FICHAS</strong>, HACIENDO CONSTAR QUE EL MISMO SE ENCUENTRA DEMORADO POR EL HECHO QUE SE INVESTIGA A DISPOSICIÓN DEL FISCAL DE FLAGRANCIA EN TURNO <strong>${r.fiscalia}</strong>, EN RELACIÓN A LA CAUSA <strong>${r.causaFinal}</strong>.-</div>
+                        <p style="text-indent: 2.0cm">SE SOLICITA TENGA A BIEN ADELANTAR EL RESULTADO DE DICHA CLASIFICACIÓN DE MANERA TELEFÓNICA A ESTA SECCIONAL.</p>
+                        <div class="p-firma">SALUDA A UD. ATTE.<br><div class="p-firma" style="margin-top: 7cm;"><br>${r.sumariante}<br>COMISARIA 2° URII</div>
+                    </div>`;
+            }
+            else if(tipo === 'insercion') {
+                area.innerHTML = `
+                    <div class="print-doc">
+                        <div class="p-fecha">${hoy}.-</div>
+                        <p><strong>SEÑOR JEFE DE DACTILOSCOPIA<br>DIVISION CRIMINALISTICA - UNIDAD REGIONAL II</strong></p>
+                        <div class="p-ref">
+                            <div>A.U.O.P.- CRÍA. 2°<br>NOTA Nº ________/26-</div>
+                            <div style="text-align:right">OBJETO: INSERCIÓN DE CAUSA Y<br>PLANILLA PRONTUARIAL<br>CAUSA Nº ${r.nroCausa}</div>
+                        </div>
+                        <div class="p-cuerpo">POR MEDIO DE LA PRESENTE, REMITO A UD. UN JUEGO DE FICHAS DACTILOSCÓPICAS DE QUIEN DICE LLAMARSE <strong>${r.nombreCompleto}</strong>, NACIDO EN <strong>${fechaN}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, HIJO DE <strong>${r.padre}</strong> Y DE <strong>${r.madre}</strong>, CON DOMICILIO EN CALLE <strong>${r.domicilio}</strong> A LOS FINES DE QUE SE CLASIFIQUEN LAS MISMAS PARA LA CORRESPONDIENTE <strong>INSERCIÓN DE CAUSA Y CONFECCIÓN DE PLANILLA PRONTUARIAL</strong>, HACIENDO CONSTAR QUE EL CAUSANTE SE ENCUENTRA DEMORADO EN ESTA DEPENDENCIA POR EL HECHO A PRIMA FACIE DE <strong>"${r.causaFinal}"</strong>, A DISPOSICIÓN DEL FISCAL DE FLAGRANCIA Y TURNO <strong>${r.fiscalia}</strong>.-</div>
+                        <p style="text-indent: 5cm">SE ADJUNTA A LA PRESENTE NOTA COPIA DE ACTA DE PROCEDIMIENTO Y ACTA CIRCUNSTANCIADA.</p>
+                        <div class="p-firma">SALUDA A UD. ATTE.<br><div class="p-firma" style="margin-top: 7cm;"><br>${r.sumariante}<br>COMISARIA 2° URII</div>
+                    </div>`;
+            }
+            else if(tipo === 'acta') {
+                area.innerHTML = `
+                    <div class="print-acta">
+                        <div class="acta-titulo">ACTA DE CONOCIMIENTO DE DERECHOS DEL IMPUTADO</div>
+                        <p><strong>Derechos del imputado - Artículo 100 y 101 del Código Procesal Penal</strong></p>
+                        <p>Toda persona detenida o indicada como autor o partícipe de un hecho delictivo cuenta con los siguientes derechos, los cuales puede hacer valer en cualquier momento de la investigación:</p>
+                        <div class="acta-punto">. Derecho a elegir un abogado defensor de su confianza, y en caso de no ejercer su derecho será asistido por un defensor de oficio integrante del <strong>Servicio Público Provincial de la Defensa Penal (SPPDP)</strong>.</div>
+                        <div class="acta-punto">. Derecho a conferenciar en forma privada y libre con su letrado defensor, antes de prestar declaración o realizar un acto que requiera su presencia.</div>
+                        <div class="acta-punto">. Que puede hacer uso de su derecho constitucional de no declarar sin que ello signifique una presunción en su contra y su declaración será válida siempre que esté presente su abogado defensor.</div>
+                        <div class="acta-punto">. Que tiene derecho a solicitar al fiscal o fiscal adjunto que le haga saber los hechos que se le atribuyen, su calificación legal y las evidencias existentes en su contra.</div>
+                        <div class="acta-punto">. Que tiene derecho a solicitar que se practiquen diligencias probatorias que estime de utilidad para su defensa.</div>
+                        
+                        <p>En la ciudad de Rosario, a la fecha <strong>${hoy}</strong>, ante quien suscribe, se procede a notificar de los derechos que le asisten como imputado a quien dice llamarse <strong>${r.nombreCompleto}</strong>, de nacionalidad <strong>${r.nacionalidad}</strong>, nacido el día <strong>${fechaN}</strong>, titular del D.N.I. Nº <strong>${r.dni}</strong>, hijo de <strong>${r.padre}</strong> y de <strong>${r.madre}</strong>, domiciliado en calle <strong>${r.domicilio}</strong>. Manifiesta que <strong>SI SABE LEER Y ESCRIBIR</strong>, y que en la actualidad se desempeña como <strong>DESOCUPADO</strong>.</p>
+                        
+                        <p>Consultado acerca de si desea designar abogado defensor refiere que: <strong>SI, A POSTERIOR DESIGNARA UNO DE SU CONFIANZA DE SER NECESARIO</strong>.</p>
+                        
+                        <p>Se le notifica además que se encuentra imputado en orden al delito de “<strong>"${r.causaFinal}"</strong>” por el que fuere aprehendido en fecha <strong>${fechaA}</strong>; y que interviene la Fiscalía de Flgrancia y Turno, del Ministerio Publico de la Acusación, a disposición del <strong>${r.fiscalia}</strong>, quien ordena que el mismo <strong>${r.orden}</strong> según el código procesal de la Provincia de Santa Fe.</p>
+                        
+                        <p>En este acto se hace entrega de una copia de la presente acta al imputado para su constancia.</p>
+                        <div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div>
+                    </div>`;
+            }
+            
+            // NUEVAS ACTAS (MANUALES)
+            else if(tipo === 'const_domicilio') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline;">ACTA DE CONSTITUCIÓN DE DOMICILIO</h2><div class="p-cuerpo" style="text-align: justify;">En la ciudad de Rosario, departamento del mismo nombre, provincia de Santa Fe, a los <strong>${hoy}</strong>, el funcionario Policial Actuante, personal adscripto a la Seccional 2° de la Policía de la Provincia de Santa Fe, Unidad Regional II Rosario, a los fines legales que diera lugar hace constar: Que por así haberlo ordenado el, DEFENSOR PENAL EN TURNO, se manda a comparecer a despacho al llamado, <strong>${r.nombreCompleto}</strong>, de nacionalidad <strong>${r.nacionalidad}</strong>, nacido el día <strong>${fechaN}</strong>, titular del D.N.I. Nº <strong>${r.dni}</strong>, hijo de <strong>${r.padre}</strong> y de <strong>${r.madre}</strong>, domiciliado en calle <strong>${r.domicilio}</strong>, a quien mediante este acto se lo notifica que deberá comparecer en el domicilio de calle SARMIENTO 2850 DEFENSORIA PUBLICA, próximo dia habil en el horario de 08:00hs a 19:00hs, a fin de constituir domicilio. Con lo que no siendo para más se da por finalizado el presente acto del que previa lectura y ratificación que de por si se hace de su total contenido firma de conformidad y para constancia.-</div><div style="margin-top:80px; display:flex; justify-content:space-around; text-align:center;"><div>____________________<br>FIRMA NOTIFICADO</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
+            }
+            else if(tipo === 'prohibicion') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline;">PROHIBICIÓN DE ACERCAMIENTO</h2><p>Se notifica a <strong>${r.nombreCompleto}</strong> la prohibición de acercamiento hacia <strong>${r.victima}</strong>.</p><p>Medida dispuesta por <strong>${r.fiscalia}</strong> en relación a la causa <strong>${r.causaFinal}</strong>.</p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
+            }
+            else if(tipo === 'entrega_rodado') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline;">ACTA DE ENTREGA DE RODADO</h2><p>Se hace entrega del rodado secuestrado a <strong>${r.nombreCompleto}</strong>, DE NACIONALIDAD <strong>${r.nacionalidad}</strong>, NACIDO EL DÍA <strong>${fechaN}</strong>, DE <strong>${r.edad} AÑOS</strong> DE EDAD, TITULAR DEL D.N.I. Nº <strong>${r.dni}</strong>, HIJO DE <strong>${r.padre}</strong> Y DE <strong>${r.madre}</strong>, CON DOMICILIO EN CALLE <strong>${r.domicilio}</strong> DE LA CIUDAD DE <strong>${r.ciudad}</strong>, PROVINCIA DE <strong>${r.provincia}</strong>,.</p><p>DETALLE: <strong>${r.secuestro}</strong></p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
+            }
+            else if(tipo === 'nota_medico') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><p><strong>SEÑOR JEFE DEL RECONOCIMIENTO MÉDICO POLICIAL</strong></p><p>Solicito examen médico para el demorado <strong>${r.nombreCompleto}</strong>, D.N.I. <strong>${r.dni}</strong>.</p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
+            }
+            else if(tipo === 'notificacion') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline;">ACTA DE NOTIFICACIÓN</h2><p>Se notifica a <strong>${r.nombreCompleto}</strong> de: ___________________________________________________________________</p><div class="p-firma">${r.sumariante}</div></div>`;
+            }
+            else if(tipo === 'entrega_pert') {
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom: 25px;">ACTA DE ENTREGA DE PERTENENCIAS</h2><div style="text-align: justify; line-height: 1.8; font-family: Arial, sans-serif;">En la ciudad de Rosario, provincia de Santa Fe, a los <strong>${hoy}</strong>, el funcionario policial actuante hace entrega al llamado <strong>${r.nombreCompleto}</strong>, DE NACIONALIDAD <strong>${r.nacionalidad}</strong>, NACIDO EL DÍA <strong>${fechaN}</strong>, DE <strong>${r.edad} AÑOS</strong> DE EDAD, TITULAR DEL D.N.I. Nº <strong>${r.dni}</strong>, HIJO DE <strong>${r.padre}</strong> Y DE <strong>${r.madre}</strong>, CON DOMICILIO EN CALLE <strong>${r.domicilio}</strong> DE LA CIUDAD DE <strong>${r.ciudad}</strong>, PROVINCIA DE <strong>${r.provincia}</strong>, de los elementos que fueran entregados en custodia: <strong>${r.pertenencias}</strong>. Firma de conformidad para debida constancia.</div><div style="margin-top:100px; display:flex; justify-content:space-around; text-align:center;"><div>__________________________<br>FIRMA DEL RECEPTOR</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
+            }
+
+            window.print();
+        }
+
+        async function exportarExcel() {
+            const wb = new ExcelJS.Workbook();
+            const sh = wb.addWorksheet('REGISTRO_POLICIAL');
+            sh.addRow(["NOMBRE", "DNI", "PADRE", "MADRE", "FECHA NAC", "EDAD", "DOMICILIO", "CAUSA INGRESO", "CAUSA FINAL", "VICTIMA", "DOM. VICTIMA", "SECUESTRO", "PERTENENCIAS", "ANTECEDENTES", "CAPTURAS", "FISCALIA", "FECHA HECHO"]);
+            db.forEach(r => sh.addRow([
+                r.nombreCompleto, r.dni, r.padre, r.madre, fF(r.fechaNac), r.edad, r.domicilio, 
+                r.causaIngreso, r.causaFinal, r.victima, r.domicilioVictima, r.secuestro, 
+                r.pertenencias, r.antecedentes, r.capturas, r.fiscalia, fF(r.fechaApreh)
+            ]));
+            const buffer = await wb.xlsx.writeBuffer();
+            saveAs(new Blob([buffer]), "BASE_DATOS_COMISARIA_2DA.xlsx");
+        }
+
+        renderTabla();
+    </script>
+</body>
+</html>
