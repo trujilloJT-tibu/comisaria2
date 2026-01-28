@@ -69,7 +69,6 @@
             .btn-orange { background: #f59e0b; color: white; }
             .btn-purple { background: #8b5cf6; color: white; }
             .btn-pink { background: #db2777; color: white; }
-            /* Estilo para botones nuevos adicionales */
             .btn-new { background: #475569; color: white; border: 1px solid #94a3b8; }
             
             table { width: 100%; border-collapse: collapse; margin-top: 30px; background: #0f172a; border-radius: 8px; overflow: hidden; }
@@ -89,14 +88,12 @@
                 position: absolute; left: 0; top: 0; width: 100%;
                 color: black; background: white; padding: 0;
             }
-
             .print-ficha {
                 padding-top: 1cm; margin-left: 6.5cm; width: 8cm;
                 text-align: center; font-family: "Courier New", monospace;
                 font-size: 11pt; line-height: 1.4; font-weight: bold;
             }
             .print-ficha div { min-height: 1.2em; margin-bottom: 2px; }
-
             .print-doc {
                 padding: 1.5cm 2.2cm; font-family: Arial, Helvetica, sans-serif;
                 font-size: 11pt; line-height: 1.5; color: black;
@@ -105,14 +102,12 @@
             .p-ref { display: flex; justify-content: space-between; margin-bottom: 35px; font-weight: bold; }
             .p-cuerpo { text-align: justify; text-indent: 5cm; margin-bottom: 20px; }
             .p-firma { margin-top: 60px; text-align: right; font-weight: bold; line-height: 1.2; }
-            
             .print-acta {
                 padding: 1.2cm 2cm; font-family: "Times New Roman", Times, serif;
                 font-size: 10.5pt; text-align: justify; text-transform: none; line-height: 1.3;
             }
             .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 13pt; margin-bottom: 15px; }
             .acta-punto { margin-bottom: 8px; padding-left: 10px; }
-
             .planilla-linea { border-bottom: 1px solid black; display: inline-block; min-width: 280px; text-transform: uppercase; }
         }
     </style>
@@ -158,7 +153,13 @@
                 <div class="form-group"><label>Fiscalía Interviniente</label><input type="text" id="fiscalia"></div>
                 <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
                 <div class="form-group"><label>Oficial Sumariante</label><input type="text" id="sumariante" value="SUB OFICIAL TRUJILLO"></div>
-                <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="QUEDA DETENIDO"></div>
+                <div class="form-group">
+    <label>Orden Judicial</label>
+    <select id="orden">
+        <option value="QUE RECUPERA SU LIBERTAD ART. 218 CPP">QUE RECUPERE SU LIBERTAD 218 CPP</option>
+        <option value="QUE CONTINUA DETENIDO A TENOR DEL ART. 214 CPP" selected>QUE CONTINUA DETENIDO A TENOR DEL ART. 214 CPP</option>
+    </select>
+</div>
             </div>
 
             <div class="print-panel">
@@ -181,7 +182,7 @@
                     <button type="button" class="btn-save" onclick="exportarExcel()">📊 EXCEL</button>
                     <button type="button" class="btn-new" onclick="document.getElementById('inputExcel').click()">📥 IMPORTAR EXCEL</button>
 
-<input type="file" id="inputExcel" style="display:none" accept=".xlsx" onchange="leerExcel(this)">
+                    <input type="file" id="inputExcel" style="display:none" accept=".xlsx" onchange="leerExcel(this)">
                 </div>
                 <button type="button" onclick="limpiar()" style="margin-top:15px; background:#475569; color:white;">🧹 LIMPIAR</button>
             </div>
@@ -207,45 +208,59 @@
         let indexEdit = null;
 
         function guardarDato() {
-            const campos = document.querySelectorAll('#registroForm input, #registroForm textarea');
-            const r = {};
-            campos.forEach(c => r[c.id] = c.value.toUpperCase());
-            
-            if(indexEdit !== null) db[indexEdit] = r; else db.push(r);
-            
-            localStorage.setItem('com2da_final_db', JSON.stringify(db));
-            renderTabla();
-            alert("REGISTRO GUARDADO CON ÉXITO");
-        }
+    const campos = document.querySelectorAll('#registroForm input, #registroForm textarea, #registroForm select'); // Añadido select
+    const r = {};
+    campos.forEach(c => r[c.id] = c.value.toUpperCase());
+    
+    if (indexEdit !== null) {
+        // Si hay un índice, sobreescribimos la posición existente
+        db[indexEdit] = r; 
+        indexEdit = null; // IMPORTANTE: Reseteamos el índice después de editar
+    } else {
+        // Si es null, es un registro nuevo
+        db.push(r);
+    }
+    
+    localStorage.setItem('com2da_final_db', JSON.stringify(db));
+    renderTabla();
+    document.getElementById('registroForm').reset(); // Limpia los campos después de guardar
+    alert("REGISTRO GUARDADO O ACTUALIZADO CON ÉXITO");
+}
+
         function eliminarDato(i) {
             if(confirm("¿ESTÁ SEGURO QUE DESEA ELIMINAR ESTE REGISTRO?")) {
                 db.splice(i, 1);
-                localStorage.setItem('com2da_db', JSON.stringify(db));
+                localStorage.setItem('com2da_final_db', JSON.stringify(db));
                 renderTabla();
                 indexEdit = null;
             }
         }
+
         function renderTabla() {
-    const tbody = document.getElementById('cuerpoTabla');
-    tbody.innerHTML = db.map((r, i) => `
-        <tr>
-            <td>${r.nombreCompleto}</td>
-            <td>${r.dni}</td>
-            <td>${r.causaFinal}</td>
-            <td>
-                <button onclick="cargar(${i})" style="background:var(--warning); color:white; padding:5px 10px;">EDITAR</button>
-                <button onclick="eliminarDato(${i})" style="background:#dc2626; color:white; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
-            </td>
-        </tr>
-    `).join('');
-}
+            const tbody = document.getElementById('cuerpoTabla');
+            tbody.innerHTML = db.map((r, i) => `
+                <tr>
+                    <td>${r.nombreCompleto}</td>
+                    <td>${r.dni}</td>
+                    <td>${r.causaFinal}</td>
+                    <td>
+                        <button onclick="cargar(${i})" style="background:var(--warning); color:white; padding:5px 10px;">EDITAR</button>
+                        <button onclick="eliminarDato(${i})" style="background:#dc2626; color:white; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
         function cargar(i) {
-            indexEdit = i;
-            const r = db[i];
-            Object.keys(r).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = r[k]; });
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+    indexEdit = i;
+    const r = db[i];
+    // Este bucle busca por ID y asigna el valor guardado
+    Object.keys(r).forEach(k => { 
+        const el = document.getElementById(k);
+        if (el) el.value = r[k]; 
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
 
         function limpiar() { document.getElementById('registroForm').reset(); indexEdit = null; }
 
@@ -261,6 +276,11 @@
             const r = indexEdit !== null ? db[indexEdit] : db[db.length - 1];
             if(!r) return alert("PRIMERO GUARDE O SELECCIONE UN REGISTRO");
             
+            // MODIFICACIÓN: VALIDACIÓN DE CAUSA FINAL PARA DERECHOS E INSERCIÓN
+            if((tipo === 'acta' || tipo === 'insercion') && (!r.causaFinal || r.causaFinal.trim() === "")) {
+                return alert("ATENCIÓN: EL CAMPO 'CALIFICACIÓN LEGAL FINAL' ESTÁ VACÍO. DEBE COMPLETARLO PARA IMPRIMIR ESTE DOCUMENTO.");
+            }
+
             const area = document.getElementById('printArea');
             const fechaN = fF(r.fechaNac);
             const fechaA = fF(r.fechaApreh);
@@ -369,8 +389,6 @@
                         <div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div>
                     </div>`;
             }
-            
-            // NUEVAS ACTAS (MANUALES)
             else if(tipo === 'const_domicilio') {
                 area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline;">ACTA DE CONSTITUCIÓN DE DOMICILIO</h2><div class="p-cuerpo" style="text-align: justify;">En la ciudad de Rosario, departamento del mismo nombre, provincia de Santa Fe, a los <strong>${hoy}</strong>, el funcionario Policial Actuante, personal adscripto a la Seccional 2° de la Policía de la Provincia de Santa Fe, Unidad Regional II Rosario, a los fines legales que diera lugar hace constar: Que por así haberlo ordenado el, DEFENSOR PENAL EN TURNO, se manda a comparecer a despacho al llamado, <strong>${r.nombreCompleto}</strong>, de nacionalidad <strong>${r.nacionalidad}</strong>, nacido el día <strong>${fechaN}</strong>, titular del D.N.I. Nº <strong>${r.dni}</strong>, hijo de <strong>${r.padre}</strong> y de <strong>${r.madre}</strong>, domiciliado en calle <strong>${r.domicilio}</strong>, a quien mediante este acto se lo notifica que deberá comparecer en el domicilio de calle SARMIENTO 2850 DEFENSORIA PUBLICA, próximo dia habil en el horario de 08:00hs a 19:00hs, a fin de constituir domicilio. Con lo que no siendo para más se da por finalizado el presente acto del que previa lectura y ratificación que de por si se hace de su total contenido firma de conformidad y para constancia.-</div><div style="margin-top:80px; display:flex; justify-content:space-around; text-align:center;"><div>____________________<br>FIRMA NOTIFICADO</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
             }
