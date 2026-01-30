@@ -3,88 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA INTEGRAL - COMISARÍA 2da ROSARIO</title>
+    <title> COMISARÍA 2da ROSARIO</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
-            --primary: #0a192f;
-            --accent: #1e3a8a;
-            --text: #e2e8f0;
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
             --border: #334155;
-            --success: #059669;
-            --warning: #ca8a04;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
-        /* DISEÑO DE PANTALLA */
+        /* --- DISEÑO DE PANTALLA --- */
         @media screen {
-            * { box-sizing: border-box; text-transform: uppercase; }
-            body {
-                background-color: var(--primary);
-                color: var(--text);
-                font-family: 'Segoe UI', Tahoma, sans-serif;
-                margin: 0; padding: 20px;
-                display: flex; flex-direction: column; align-items: center;
-            }
-            .container {
-                width: 95%; max-width: 1200px;
-                background: rgba(15, 23, 42, 0.95);
-                padding: 30px; border-radius: 12px;
-                border: 1px solid var(--border);
-                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            }
-            h1 { text-align: center; color: #3b82f6; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
-            .section-title {
-                background: var(--accent); padding: 12px; margin-top: 25px;
-                border-radius: 5px; font-weight: bold; border-left: 5px solid #3b82f6;
-            }
-            .grid-form {
-                display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 15px; margin-top: 15px;
-            }
-            .form-group { display: flex; flex-direction: column; }
-            label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px; font-weight: 600; }
-            input, select, textarea {
-                background: #1e293b; border: 1px solid var(--border);
-                color: white; padding: 12px; border-radius: 6px;
-                font-size: 0.95rem; transition: all 0.3s;
-            }
-            input:focus, textarea:focus { border-color: #3b82f6; outline: none; background: #26334d; }
-            .full-row { grid-column: 1 / -1; }
-            textarea { min-height: 100px; resize: vertical; }
-
-            .print-panel {
-                background: #1e3a8a; padding: 25px; border-radius: 10px;
-                margin-top: 30px; border: 2px solid #3b82f6;
-                display: flex; flex-direction: column; align-items: center;
-            }
-            .button-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-            button {
-                cursor: pointer; padding: 12px 20px; border: none; border-radius: 6px;
-                font-weight: bold; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
-            }
-            button:hover { transform: translateY(-2px); filter: brightness(1.2); }
-            .btn-save { background: var(--success); color: white; }
-            .btn-blue { background: #3b82f6; color: white; }
-            .btn-orange { background: #f59e0b; color: white; }
-            .btn-purple { background: #8b5cf6; color: white; }
-            .btn-pink { background: #db2777; color: white; }
-            .btn-new { background: #475569; color: white; border: 1px solid #94a3b8; }
+            * { box-sizing: border-box; text-transform: uppercase; transition: all 0.2s ease; }
             
-            table { width: 100%; border-collapse: collapse; margin-top: 30px; background: #0f172a; border-radius: 8px; overflow: hidden; }
-            th { background: #1e3a8a; color: white; padding: 15px; text-align: left; }
-            td { padding: 12px; border-bottom: 1px solid var(--border); }
-            tr:hover { background: #1e293b; }
+            body {
+                background-color: var(--bg-main);
+                color: var(--text-main);
+                font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                margin: 0;
+                padding: 10px;
+                line-height: 1.5;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 1300px;
+                margin: 0 auto;
+                padding: 15px;
+            }
+
+            header {
+                text-align: center;
+                padding: 20px 0;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 30px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+                color: var(--accent);
+                margin: 0;
+                text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            }
+
+            .card {
+                background: var(--bg-card);
+                border-radius: 16px;
+                border: 1px solid var(--border);
+                padding: 24px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                margin-bottom: 25px;
+            }
+
+            .section-title {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 1rem;
+                font-weight: 700;
+                color: var(--text-main);
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid var(--primary);
+            }
+
+            /* Grid del Formulario */
+            .grid-form {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 20px;
+            }
+
+            .form-group { display: flex; flex-direction: column; }
+            
+            label {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+            }
+
+            input, select, textarea {
+                background: #0f172a;
+                border: 1px solid var(--border);
+                color: #fff;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 0.9rem;
+            }
+
+            input:focus, textarea:focus {
+                border-color: var(--primary);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(52, 54, 167, 0.2);
+            }
+
+            .full-row { grid-column: 1 / -1; }
+            textarea { min-height: 80px; }
+
+            /* Panel de Acciones/Botones */
+            .actions-panel {
+                background: #726bd6;
+                border: 1px solid var(--primary);
+                position: sticky;
+                bottom: 20px;
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .button-group {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 8px;
+                width: 100%;
+            }
+
+            button {
+                cursor: pointer;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 700;
+                font-size: 0.75rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                color: white;
+            }
+
+            button:hover { transform: translateY(-2px); filter: brightness(1.1); }
+            button:active { transform: translateY(0); }
+
+            .btn-save { background: var(--success); grid-column: span 2; font-size: 1rem; }
+            .btn-print { background: var(--primary); }
+            .btn-secondary { background: #475569; }
+            .btn-tool { background: #6366f1; }
+            .btn-special { background: #db2777; }
+
+            /* Tabla */
+            .table-container { overflow-x: auto; margin-top: 20px; border-radius: 12px; }
+            table { width: 100%; border-collapse: collapse; background: var(--bg-card); }
+            th { background: #334155; color: var(--text-main); padding: 15px; text-align: left; font-size: 0.8rem; }
+            td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+            tr:hover { background: #2d3748; }
+
             #printArea { display: none; }
 
+            /* Editor */
             #editorElevacion {
                 width: 100%; min-height: 400px; background: white; color: black;
-                padding: 20px; margin-top: 10px; border-radius: 5px;
-                font-family: Arial, sans-serif; text-transform: none; overflow-y: auto;
+                padding: 40px; border-radius: 8px; font-family: Arial, sans-serif;
+                text-transform: none; margin: 10px 0;
+            }
+
+            /* Responsive para Celulares */
+            @media (max-width: 768px) {
+                h1 { font-size: 1.3rem; }
+                .btn-save { grid-column: span 1; }
+                .grid-form { grid-template-columns: 1fr; }
+                .container { padding: 5px; }
+                .actions-panel { position: relative; bottom: 0; }
             }
         }
 
-        /* DISEÑO DE IMPRESIÓN */
+        /* --- DISEÑO DE IMPRESIÓN (MANTENIDO IGUAL) --- */
         @media print {
             @page { size: A4; margin: 0; }
             body * { visibility: hidden; text-transform: uppercase; }
@@ -93,14 +189,12 @@
                 display: block !important; position: absolute; left: 0; top: 0; width: 100%;
                 color: black; background: white; padding: 0;
             }
-
             .print-ficha {
                 padding-top: 1cm; margin-left: 6.5cm; width: 8cm;
                 text-align: center; font-family: "Courier New", monospace;
                 font-size: 11pt; line-height: 1.4; font-weight: bold;
             }
             .print-ficha div { min-height: 1.2em; margin-bottom: 2px; }
-
             .print-doc {
                 padding: 1.5cm 2.2cm; font-family: Arial, Helvetica, sans-serif;
                 font-size: 11pt; line-height: 1.5; color: black;
@@ -109,14 +203,12 @@
             .p-ref { display: flex; justify-content: space-between; margin-bottom: 35px; font-weight: bold; }
             .p-cuerpo { text-align: justify; text-indent: 5cm; margin-bottom: 20px; }
             .p-firma { margin-top: 60px; text-align: right; font-weight: bold; line-height: 1.2; }
-            
             .print-acta {
                 padding: 1.2cm 2cm; font-family: "Times New Roman", Times, serif;
                 font-size: 10.5pt; text-align: justify; text-transform: none; line-height: 1.3;
             }
             .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 13pt; margin-bottom: 15px; }
             .acta-punto { margin-bottom: 8px; padding-left: 10px; }
-
             .planilla-linea { border-bottom: 1px solid black; display: inline-block; min-width: 280px; text-transform: uppercase; }
             [contenteditable="true"] { border: none; outline: none; }
         }
@@ -125,96 +217,105 @@
 <body>
 
     <div class="container">
-        <h1>✙ COMISARÍA 2da URII - ROSARIO ✙</h1>
+        <header>
+            <h1>✙ COMISARÍA 2da ✙</h1>
+        </header>
         
         <form id="registroForm">
-            <div class="section-title">👤 IDENTIDAD DEL DEMORADO</div>
-            <div class="grid-form">
-                <div class="form-group"><label>Nombre y Apellido</label><input type="text" id="nombreCompleto"></div>
-                <div class="form-group"><label>Apodo / Alias</label><input type="text" id="apodo" value="NO TIENE"></div>
-                <div class="form-group"><label>DNI / Documento</label><input type="text" id="dni"></div>
-                <div class="form-group"><label>Hijo de (Padre)</label><input type="text" id="padre"></div>
-                <div class="form-group"><label>Hijo de (Madre)</label><input type="text" id="madre"></div>
-                <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fechaNac"></div>
-                <div class="form-group"><label>Edad</label><input type="text" id="edad"></div>
-                <div class="form-group"><label>Estado Civil</label><input type="text" id="estadoCivil" value="SOLTERO"></div>
-                <div class="form-group"><label>Nacionalidad</label><input type="text" id="nacionalidad" value="ARGENTINO"></div>
-                <div class="form-group"><label>Domicilio Real</label><input type="text" id="domicilio"></div>
-                <div class="form-group"><label>Ciudad</label><input type="text" id="ciudad" value="ROSARIO"></div>
-                <div class="form-group"><label>Provincia</label><input type="text" id="provincia" value="SANTA FE"></div>
-            </div>
-
-            <div class="section-title">⚖️ DATOS DE LA CAUSA Y BIENES</div>
-            <div class="grid-form">
-                <div class="form-group full-row"><label>Antecedentes Penales</label><textarea id="antecedentes"></textarea></div>
-                <div class="form-group full-row"><label>Capturas y Paraderos</label><textarea id="capturas"></textarea></div>
-                
-                <div class="form-group"><label>Causa por la que lo traen</label><input type="text" id="causaIngreso"></div>
-                <div class="form-group"><label>Calificación Legal Final (Causa)</label><input type="text" id="causaFinal"></div>
-                
-                <div class="form-group"><label>Nombre Víctima</label><input type="text" id="victima" value="LA SOCIEDAD"></div>
-                <div class="form-group"><label>Domicilio Víctima</label><input type="text" id="domicilioVictima"></div>
-                
-                <div class="form-group full-row"><label>Secuestro</label><textarea id="secuestro"></textarea></div>
-                <div class="form-group full-row"><label>Pertenencias</label><textarea id="pertenencias"></textarea></div>
-
-                <div class="form-group"><label>Número de Causa / CUIJ</label><input type="text" id="nroCausa"></div>
-                <div class="form-group"><label>Número de Prio</label><input type="text" id="nroPrio"></div>
-                <div class="form-group"><label>Fiscalía Interviniente</label><input type="text" id="fiscalia"></div>
-                <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
-                <div class="form-group"><label>Oficial Sumariante</label><input type="text" id="sumariante" value="SUB OFICIAL TRUJILLO"></div>
-                <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="QUEDA DETENIDO"></div>
-                <input type="hidden" id="elevacionPersonalizada">
-            </div>
-
-            <div class="print-panel">
-                <div class="button-group">
-                    <button type="button" class="btn-save" onclick="guardarDato()">💾 GUARDAR</button>
-                    <button type="button" class="btn-blue" onclick="imprimir('ficha')">🖨️ FICHA</button>
-                    <button type="button" class="btn-orange" onclick="imprimir('planilla')">📝 PLANILLA</button>
-                    <button type="button" class="btn-purple" onclick="imprimir('cotejo')">📄 COTEJO</button>
-                    <button type="button" class="btn-purple" style="background:#4338ca" onclick="imprimir('afis')">🆔 AFIS</button>
-                    <button type="button" class="btn-pink" onclick="imprimir('insercion')">📥 INSERCIÓN</button>
-                    <button type="button" class="btn-blue" onclick="imprimir('acta')">📜 DERECHOS</button>
-                    
-                    <button type="button" class="btn-new" onclick="imprimir('const_domicilio')">🏠 CONST. DOM.</button>
-                    <button type="button" class="btn-new" onclick="imprimir('prohibicion')">🚫 PROHIBICION</button>
-                    <button type="button" class="btn-new" onclick="imprimir('entrega_rodado')">🏍️ ENT. RODADO</button>
-                    <button type="button" class="btn-new" onclick="imprimir('nota_medico')">⚕️ NOTA MEDICO</button>
-                    <button type="button" class="btn-new" onclick="imprimir('notificacion')">🔔 NOTIFICACION</button>
-                    <button type="button" class="btn-new" onclick="imprimir('entrega_pert')">📦 ENT. PERTEN.</button>
-                    
-                    <button type="button" class="btn-save" style="background: #2563eb;" onclick="abrirEditorElevacion()">📄 ELEVACIÓN</button>
-
-                    <button type="button" class="btn-save" onclick="exportarExcel()">📊 EXCEL</button>
-                    <button type="button" class="btn-new" onclick="document.getElementById('inputExcel').click()">📥 IMPORTAR EXCEL</button>
-
-                    <input type="file" id="inputExcel" style="display:none" accept=".xlsx" onchange="leerExcel(this)">
+            <div class="card">
+                <div class="section-title">👤 IDENTIDAD DEL DEMORADO</div>
+                <div class="grid-form">
+                    <div class="form-group"><label>Nombre y Apellido</label><input type="text" id="nombreCompleto" placeholder="Ej: JUAN PEREZ"></div>
+                    <div class="form-group"><label>Apodo / Alias</label><input type="text" id="apodo" value="NO TIENE"></div>
+                    <div class="form-group"><label>DNI / Documento</label><input type="text" id="dni"></div>
+                    <div class="form-group"><label>Hijo de (Padre)</label><input type="text" id="padre"></div>
+                    <div class="form-group"><label>Hijo de (Madre)</label><input type="text" id="madre"></div>
+                    <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fechaNac"></div>
+                    <div class="form-group"><label>Edad</label><input type="text" id="edad"></div>
+                    <div class="form-group"><label>Estado Civil</label><input type="text" id="estadoCivil" value="SOLTERO"></div>
+                    <div class="form-group"><label>Nacionalidad</label><input type="text" id="nacionalidad" value="ARGENTINO"></div>
+                    <div class="form-group"><label>Domicilio Real</label><input type="text" id="domicilio"></div>
+                    <div class="form-group"><label>Ciudad</label><input type="text" id="ciudad" value="ROSARIO"></div>
+                    <div class="form-group"><label>Provincia</label><input type="text" id="provincia" value="SANTA FE"></div>
                 </div>
-                <button type="button" onclick="limpiar()" style="margin-top:15px; background:#475569; color:white;">🧹 LIMPIAR</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title">⚖️ DATOS DE LA CAUSA Y BIENES</div>
+                <div class="grid-form">
+                    <div class="form-group full-row"><label>Antecedentes Penales</label><textarea id="antecedentes"></textarea></div>
+                    <div class="form-group full-row"><label>Capturas y Paraderos</label><textarea id="capturas"></textarea></div>
+                    <div class="form-group"><label>Causa por la que lo traen</label><input type="text" id="causaIngreso"></div>
+                    <div class="form-group"><label>Calificación Final</label><input type="text" id="causaFinal"></div>
+                    <div class="form-group"><label>Nombre Víctima</label><input type="text" id="victima" value="LA SOCIEDAD"></div>
+                    <div class="form-group"><label>Domicilio Víctima</label><input type="text" id="domicilioVictima"></div>
+                    <div class="form-group full-row"><label>Secuestro</label><textarea id="secuestro"></textarea></div>
+                    <div class="form-group full-row"><label>Pertenencias</label><textarea id="pertenencias"></textarea></div>
+                    <div class="form-group"><label>CUIJ</label><input type="text" id="nroCausa"></div>
+                    <div class="form-group"><label>Número de Prio</label><input type="text" id="nroPrio"></div>
+                    <div class="form-group"><label>Fiscalía</label><input type="text" id="fiscalia"></div>
+                    <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
+                    <div class="form-group"><label>Oficial Sumariante</label><input type="text" id="sumariante" value="SUB OFICIAL TRUJILLO"></div>
+                    <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="QUEDA DETENIDO"></div>
+                    <input type="hidden" id="elevacionPersonalizada">
+                </div>
+            </div>
+
+            <div class="card actions-panel">
+                <div class="section-title" style="margin-bottom:10px; border:none">⚡ DOCUMENTACIÓN</div>
+                <div class="button-group">
+                    <button type="button" class="btn-save" onclick="guardarDato()">💾 GUARDAR EN RED</button>
+                    
+                    <button type="button" class="btn-print" onclick="imprimir('ficha')">🖨️ FICHA</button>
+                    <button type="button" class="btn-print" onclick="imprimir('planilla')">📝 PLANILLA</button>
+                    <button type="button" class="btn-print" onclick="imprimir('cotejo')">📄 COTEJO</button>
+                    <button type="button" class="btn-print" style="background:#4338ca" onclick="imprimir('afis')">🆔 AFIS</button>
+                    <button type="button" class="btn-special" onclick="imprimir('insercion')">📥 INSERCIÓN</button>
+                    <button type="button" class="btn-print" onclick="imprimir('acta')">📜 DERECHOS</button>
+                    
+                    <button type="button" class="btn-secondary" onclick="imprimir('const_domicilio')">🏠 CONST. DOM.</button>
+                    <button type="button" class="btn-secondary" onclick="imprimir('prohibicion')">🚫 PROHIBICION</button>
+                    <button type="button" class="btn-secondary" onclick="imprimir('entrega_rodado')">🏍️ ENT. RODADO</button>
+                    <button type="button" class="btn-secondary" onclick="imprimir('nota_medico')">⚕️ NOTA MEDICO</button>
+                    <button type="button" class="btn-secondary" onclick="imprimir('notificacion')">🔔 NOTIFICACION</button>
+                    <button type="button" class="btn-secondary" onclick="imprimir('entrega_pert')">📦 ENT. PERTEN.</button>
+                    
+                    <button type="button" class="btn-tool" style="background: #2563eb;" onclick="abrirEditorElevacion()">📄 ELEVACIÓN</button>
+                    <button type="button" class="btn-tool" onclick="exportarExcel()">📊 EXCEL</button>
+                    <button type="button" class="btn-tool" onclick="document.getElementById('inputExcel').click()">📥 IMPORTAR</button>
+                </div>
+                <button type="button" onclick="Nuevo()" style="background:#475569; width: 100%;">🧹 Nuevo FORMULARIO</button>
+                <input type="file" id="inputExcel" style="display:none" accept=".xlsx" onchange="leerExcel(this)">
             </div>
             
             <div id="contenedorEditor" style="display:none; margin-top:20px; width:100%;">
-                <div class="section-title">📝 EDITAR TEXTO DE ELEVACIÓN (PUEDE MODIFICAR AQUÍ)</div>
-                <div id="editorElevacion" contenteditable="true"></div>
-                <div class="button-group" style="margin-top:10px;">
-                    <button type="button" class="btn-save" onclick="prepararImpresionElevacion()">🖨️ CONFIRMAR E IMPRIMIR</button>
-                    <button type="button" class="btn-new" onclick="document.getElementById('contenedorEditor').style.display='none'">❌ CANCELAR</button>
+                <div class="card" style="background: #f1f5f9;">
+                    <div class="section-title" style="color: #0f172a; border-color:#0f172a">📝 EDITOR DE ELEVACIÓN</div>
+                    <div id="editorElevacion" contenteditable="true"></div>
+                    <div class="button-group" style="margin-top:15px;">
+                        <button type="button" class="btn-save" onclick="prepararImpresionElevacion()">🖨️ CONFIRMAR E IMPRIMIR</button>
+                        <button type="button" class="btn-secondary" onclick="document.getElementById('contenedorEditor').style.display='none'">❌ CANCELAR</button>
+                    </div>
                 </div>
             </div>
         </form>
 
-        <table id="tablaRegistros">
-            <thead>
-                <tr>
-                    <th>APREHENDIDO</th>
-                    <th>DNI</th>
-                    <th>DELITO</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpoTabla"></tbody>
-        </table>
+        <div class="card">
+            <div class="section-title">📋 REGISTROS RECIENTES</div>
+            <div class="table-container">
+                <table id="tablaRegistros">
+                    <thead>
+                        <tr>
+                            <th>APREHENDIDO</th>
+                            <th>DNI</th>
+                            <th>DELITO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <div id="printArea"></div>
@@ -223,37 +324,32 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // 2. Tu configuración de Firebase
         const firebaseConfig = {
-  apiKey: "AIzaSyDGXXj11PQJPCea2v_YmyNg0cR2U0GqxkA",
-  authDomain: "comisaria2da-cc0ea.firebaseapp.com",
-  projectId: "comisaria2da-cc0ea",
-  storageBucket: "comisaria2da-cc0ea.firebasestorage.app",
-  messagingSenderId: "317044163335",
-  appId: "1:317044163335:web:ec6f0209fbbd03225b3ba2",
-  measurementId: "G-CYJXQ8H9TH"
-};
+            apiKey: "AIzaSyDGXXj11PQJPCea2v_YmyNg0cR2U0GqxkA",
+            authDomain: "comisaria2da-cc0ea.firebaseapp.com",
+            projectId: "comisaria2da-cc0ea",
+            storageBucket: "comisaria2da-cc0ea.firebasestorage.app",
+            messagingSenderId: "317044163335",
+            appId: "1:317044163335:web:ec6f0209fbbd03225b3ba2",
+            measurementId: "G-CYJXQ8H9TH"
+        };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const dbCloud = firebase.firestore();
 
         let db = [];
         let indexEdit = null;
 
-        // 3. Sincronización en tiempo real (Esencial para ver cambios de otras PCs)
         dbCloud.collection("registros").orderBy("timestamp", "desc")
             .onSnapshot((snapshot) => {
                 db = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderTabla();
             });
 
-        // 4. Guardar en la Nube
         async function guardarDato() {
             const campos = document.querySelectorAll('#registroForm input, #registroForm textarea');
             const r = {};
             campos.forEach(c => r[c.id] = c.value.toUpperCase());
-            
             r.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
             try {
@@ -265,32 +361,30 @@
                     await dbCloud.collection("registros").add(r);
                 }
                 document.getElementById('registroForm').reset();
-                alert("✅ SINCRONIZADO CON ÉXITO EN TODA LA RED");
+                alert("✅ SINCRONIZADO CON ÉXITO");
             } catch (error) {
-                alert("❌ ERROR: Verifique su conexión a internet.");
+                alert("❌ ERROR: Verifique conexión.");
             }
         }
 
-        // 5. Eliminar de la Nube
         async function eliminarDato(i) {
-            if(confirm("¿ESTÁ SEGURO QUE DESEA ELIMINAR ESTE REGISTRO DE TODA LA RED?")) {
+            if(confirm("¿ELIMINAR ESTE REGISTRO?")) {
                 const id = db[i].id;
                 await dbCloud.collection("registros").doc(id).delete();
                 indexEdit = null;
             }
         }
 
-        // 6. Funciones de Renderizado y Carga
         function renderTabla() {
             const tbody = document.getElementById('cuerpoTabla');
             tbody.innerHTML = db.map((r, i) => `
                 <tr>
-                    <td>${r.nombreCompleto || ''}</td>
+                    <td style="font-weight:bold">${r.nombreCompleto || ''}</td>
                     <td>${r.dni || ''}</td>
                     <td>${r.causaFinal || ''}</td>
                     <td>
-                        <button onclick="cargar(${i})" style="background:var(--warning); color:white; padding:5px 10px;">EDITAR</button>
-                        <button onclick="eliminarDato(${i})" style="background:#dc2626; color:white; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+                        <button onclick="cargar(${i})" style="background:var(--warning); display:inline-flex; padding:5px 10px;">EDITAR</button>
+                        <button onclick="eliminarDato(${i})" style="background:var(--danger); display:inline-flex; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
                     </td>
                 </tr>
             `).join('');
@@ -304,24 +398,22 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function limpiar() { 
+        function Nuevo() { 
             document.getElementById('registroForm').reset(); 
             document.getElementById('contenedorEditor').style.display = 'none';
             indexEdit = null; 
         }
 
         function fF(f) { return f ? f.split('-').reverse().join('/') : ""; }
-        
         function getHoy() {
             const d = new Date();
             const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             return `ROSARIO, ${d.toLocaleDateString('es-AR', opciones)}`.toUpperCase();
         }
 
-        // 7. Funciones de Elevación e Impresión
         function abrirEditorElevacion() {
             const r = indexEdit !== null ? db[indexEdit] : null;
-            if(!r) return alert("PRIMERO SELECCIONE UN REGISTRO DE LA TABLA (EDITAR)");
+            if(!r) return alert("SELECCIONE UN REGISTRO PRIMERO");
             const editor = document.getElementById('editorElevacion');
             const contenedor = document.getElementById('contenedorEditor');
             
@@ -354,11 +446,10 @@
 
         function imprimir(tipo) {
             const r = indexEdit !== null ? db[indexEdit] : db[db.length - 1];
-            if(!r) return alert("PRIMERO GUARDE O SELECCIONE UN REGISTRO");
+            if(!r) return alert("SIN DATOS PARA IMPRIMIR");
             
-            // MODIFICACIÓN: VALIDACIÓN DE CAUSA FINAL PARA DERECHOS E INSERCIÓN
             if((tipo === 'acta' || tipo === 'insercion') && (!r.causaFinal || r.causaFinal.trim() === "")) {
-                return alert("ATENCIÓN: EL CAMPO 'CALIFICACIÓN LEGAL FINAL' ESTÁ VACÍO. DEBE COMPLETARLO PARA IMPRIMIR ESTE DOCUMENTO.");
+                return alert("ERROR: FALTA CALIFICACIÓN LEGAL FINAL.");
             }
 
             const area = document.getElementById('printArea');
@@ -367,43 +458,10 @@
             const hoy = getHoy();
 
             if(tipo === 'ficha') {
-                area.innerHTML = `
-                    <div class="print-ficha">
-                        <div>${r.nombreCompleto}</div><div style="margin-bottom:1.5em"></div>
-                        <div>${r.padre}</div><div>${r.madre}</div>
-                        <div>${r.nacionalidad}</div><div>${r.provincia}</div>
-                        <div>${r.ciudad}</div><div>${fechaN} &nbsp; ${r.edad} AÑOS</div>
-                        <div>D.N.I. Nº ${r.dni}</div><div style="margin-bottom:1.5em"></div>
-                        <div>${r.domicilio}</div>
-                    </div>`;
+                area.innerHTML = `<div class="print-ficha"><div>${r.nombreCompleto}</div><div style="margin-bottom:1.5em"></div><div>${r.padre}</div><div>${r.madre}</div><div>${r.nacionalidad}</div><div>${r.provincia}</div><div>${r.ciudad}</div><div>${fechaN} &nbsp; ${r.edad} AÑOS</div><div>D.N.I. Nº ${r.dni}</div><div style="margin-bottom:1.5em"></div><div>${r.domicilio}</div></div>`;
             }
             else if(tipo === 'planilla') {
-                area.innerHTML = `
-                    <div class="print-doc">
-                        <div class="p-fecha">${hoy}</div>
-                        <h2 style="text-align:center; text-decoration:underline; margin-bottom:30px">PLANILLA DE FILIACION PRONTUARIAL</h2>
-                        <p><strong>APELLIDO Y NOMBRES:</strong> <span class="planilla-linea">${r.nombreCompleto}</span></p>
-                        <p><strong>APODO / ALIAS:</strong> <span class="planilla-linea">${r.apodo}</span></p>
-                        <p><strong>HIJO DE (PADRE):</strong> <span class="planilla-linea">${r.padre}</span></p>
-                        <p><strong>HIJO DE (MADRE):</strong> <span class="planilla-linea">${r.madre}</span></p>
-                        <p><strong>NACIONALIDAD:</strong> <span class="planilla-linea">${r.nacionalidad}</span></p>
-                        <p><strong>ESTADO CIVIL:</strong> <span class="planilla-linea">${r.estadoCivil}</span></p>
-                        <p><strong>FECHA DE NACIMIENTO:</strong> <span class="planilla-linea">${fechaN}</span></p>
-                        <p><strong>EDAD:</strong> <span class="planilla-linea">${r.edad} AÑOS</span></p>
-                        <p><strong>DOMICILIADO EN CALLE:</strong> <span class="planilla-linea">${r.domicilio}</span></p>
-                        <p><strong>DOCUMENTO TIPO:</strong> <span class="planilla-linea">D.N.I N° ${r.dni}</span></p>
-                        <p><strong>PRIO N°:</strong> <span class="planilla-linea">${r.nroPrio}</span></p>
-                        
-                        <div style="margin-top:20px"><strong>CAPTURAS Y/O PARADEROS:</strong>
-                            <pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase; width: 100%; display: block;">${r.capturas}</pre>
-                        </div>
-                        <div style="margin-top:20px"><strong>ANTECEDENTES PENALES:</strong>
-                            <pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase; width: 100%; display: block;">${r.antecedentes}</pre>
-                        </div>
-                        
-                        <p style="font-size:10pt; margin-top:40px"><strong>NOTA:</strong> DATOS SUMINISTRADOS VIA TELEFONICA POR OFICINA 10 PDI.</p>
-                        <div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div>
-                    </div>`;
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom:30px">PLANILLA DE FILIACION PRONTUARIAL</h2><p><strong>APELLIDO Y NOMBRES:</strong> <span class="planilla-linea">${r.nombreCompleto}</span></p><p><strong>APODO / ALIAS:</strong> <span class="planilla-linea">${r.apodo}</span></p><p><strong>HIJO DE (PADRE):</strong> <span class="planilla-linea">${r.padre}</span></p><p><strong>HIJO DE (MADRE):</strong> <span class="planilla-linea">${r.madre}</span></p><p><strong>NACIONALIDAD:</strong> <span class="planilla-linea">${r.nacionalidad}</span></p><p><strong>ESTADO CIVIL:</strong> <span class="planilla-linea">${r.estadoCivil}</span></p><p><strong>FECHA DE NACIMIENTO:</strong> <span class="planilla-linea">${fechaN}</span></p><p><strong>EDAD:</strong> <span class="planilla-linea">${r.edad} AÑOS</span></p><p><strong>DOMICILIADO EN CALLE:</strong> <span class="planilla-linea">${r.domicilio}</span></p><p><strong>DOCUMENTO TIPO:</strong> <span class="planilla-linea">D.N.I N° ${r.dni}</span></p><p><strong>PRIO N°:</strong> <span class="planilla-linea">${r.nroPrio}</span></p><div style="margin-top:20px"><strong>CAPTURAS Y/O PARADEROS:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase;">${r.capturas}</pre></div><div style="margin-top:20px"><strong>ANTECEDENTES PENALES:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 11pt; margin-top: 5px; text-transform: uppercase;">${r.antecedentes}</pre></div><p style="font-size:10pt; margin-top:40px"><strong>NOTA:</strong> DATOS SUMINISTRADOS VIA TELEFONICA POR OFICINA 10 PDI.</p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
             }
             else if(tipo === 'cotejo') {
                 area.innerHTML = `
@@ -493,11 +551,11 @@
 
         async function exportarExcel() {
             const wb = new ExcelJS.Workbook();
-            const sh = wb.addWorksheet('REGISTRO_POLICIAL');
-            sh.addRow(["NOMBRE", "DNI", "PADRE", "MADRE", "FECHA NAC", "CAUSA FINAL", "FISCALIA"]);
-            db.forEach(r => sh.addRow([r.nombreCompleto, r.dni, r.padre, r.madre, fF(r.fechaNac), r.causaFinal, r.fiscalia]));
+            const sh = wb.addWorksheet('REGISTRO');
+            sh.addRow(["NOMBRE", "DNI", "CAUSA FINAL", "FISCALIA"]);
+            db.forEach(r => sh.addRow([r.nombreCompleto, r.dni, r.causaFinal, r.fiscalia]));
             const buffer = await wb.xlsx.writeBuffer();
-            saveAs(new Blob([buffer]), "BASE_DATOS_COMISARIA_2DA.xlsx");
+            saveAs(new Blob([buffer]), "BASE_COMISARIA.xlsx");
         }
     </script>
 </body>
