@@ -159,7 +159,25 @@
             table { width: 100%; border-collapse: collapse; background: var(--bg-card); }
             th { background: #334155; color: var(--text-main); padding: 15px; text-align: left; font-size: 0.8rem; }
             td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-            tr:hover { background: #2d3748; }
+            
+            /* ESTILOS DE COMPRESIÓN POR FECHA */
+            .fecha-header {
+                background: #334155 !important;
+                color: var(--accent);
+                font-weight: bold;
+                text-align: left;
+                padding: 12px 20px;
+                cursor: pointer;
+                border-bottom: 2px solid var(--bg-main);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                user-select: none;
+            }
+            .fecha-header:hover { background: #475569 !important; }
+            .fecha-header::after { content: '▼'; font-size: 0.7rem; transition: 0.3s; }
+            .fecha-header.collapsed::after { content: '◀'; }
+            .row-hidden { display: none !important; }
 
             #printArea { display: none; }
 
@@ -180,7 +198,7 @@
             }
         }
 
-        /* --- DISEÑO DE IMPRESIÓN (MANTENIDO IGUAL) --- */
+        /* --- DISEÑO DE IMPRESIÓN --- */
         @media print {
             @page { size: A4; margin: 0; }
             body * { visibility: hidden; text-transform: uppercase; }
@@ -215,6 +233,7 @@
     </style>
 </head>
 <body>
+    
 
     <div class="container">
         <header>
@@ -251,7 +270,7 @@
                     <div class="form-group"><label>Domicilio Víctima</label><input type="text" id="domicilioVictima"></div>
                     <div class="form-group full-row"><label>Secuestro</label><textarea id="secuestro"></textarea></div>
                     <div class="form-group full-row"><label>Pertenencias</label><textarea id="pertenencias"></textarea></div>
-                    <div class="form-group"><label>CUIJ</label><input type="text" id="nroCausa"></div>
+                    <div class="form-group"><label>NROCAUSA</label><input type="text" id="nroCausa"></div>
                     <div class="form-group"><label>Número de Prio</label><input type="text" id="nroPrio"></div>
                     <div class="form-group"><label>Fiscalía</label><input type="text" id="fiscalia"></div>
                     <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
@@ -301,7 +320,7 @@
         </form>
 
         <div class="card">
-            <div class="section-title">📋 REGISTROS RECIENTES</div>
+            <div class="section-title">📋 REGISTROS (CLIC EN FECHA PARA VER/OCULTAR)</div>
             <div class="table-container">
                 <table id="tablaRegistros">
                     <thead>
@@ -377,17 +396,63 @@
 
         function renderTabla() {
             const tbody = document.getElementById('cuerpoTabla');
-            tbody.innerHTML = db.map((r, i) => `
-                <tr>
-                    <td style="font-weight:bold">${r.nombreCompleto || ''}</td>
-                    <td>${r.dni || ''}</td>
-                    <td>${r.causaFinal || ''}</td>
-                    <td>
-                        <button onclick="cargar(${i})" style="background:var(--warning); display:inline-flex; padding:5px 10px;">EDITAR</button>
-                        <button onclick="eliminarDato(${i})" style="background:var(--danger); display:inline-flex; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+            tbody.innerHTML = '';
+
+            // Agrupar por fecha de la DB
+            const grupos = db.reduce((acc, r) => {
+                let fechaKey = "SIN FECHA";
+                if (r.timestamp) {
+                    const d = r.timestamp.toDate ? r.timestamp.toDate() : new Date(r.timestamp);
+                    fechaKey = d.toLocaleDateString('es-AR');
+                } else if (r.fechaApreh) {
+                    fechaKey = fF(r.fechaApreh);
+                }
+                if (!acc[fechaKey]) acc[fechaKey] = [];
+                acc[fechaKey].push(r);
+                return acc;
+            }, {});
+
+            const hoy = new Date().toLocaleDateString('es-AR');
+
+            Object.keys(grupos).forEach(fecha => {
+                const esHoy = (fecha === hoy);
+                const etiqueta = esHoy ? "HOY" : fecha;
+                
+                // Cabecera de fecha colapsable
+                const header = document.createElement('tr');
+                header.innerHTML = `
+                    <td colspan="4" class="fecha-header ${esHoy ? '' : 'collapsed'}" onclick="toggleFecha('${fecha}')">
+                        📅 REGISTROS DEL DÍA: ${etiqueta} (${grupos[fecha].length})
                     </td>
-                </tr>
-            `).join('');
+                `;
+                tbody.appendChild(header);
+
+                // Filas de datos
+                grupos[fecha].forEach(r => {
+                    const realIndex = db.findIndex(item => item.id === r.id);
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-fecha', fecha);
+                    if (!esHoy) tr.classList.add('row-hidden');
+
+                    tr.innerHTML = `
+                        <td style="font-weight:bold">${r.nombreCompleto || ''}</td>
+                        <td>${r.dni || ''}</td>
+                        <td>${r.causaFinal || ''}</td>
+                        <td>
+                            <button onclick="cargar(${realIndex})" style="background:var(--warning); display:inline-flex; padding:5px 10px;">EDITAR</button>
+                            <button onclick="eliminarDato(${realIndex})" style="background:var(--danger); display:inline-flex; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function toggleFecha(fecha) {
+            const filas = document.querySelectorAll(`tr[data-fecha="${fecha}"]`);
+            const header = event.currentTarget;
+            header.classList.toggle('collapsed');
+            filas.forEach(f => f.classList.toggle('row-hidden'));
         }
 
         function cargar(i) {
@@ -402,6 +467,9 @@
             document.getElementById('registroForm').reset(); 
             document.getElementById('contenedorEditor').style.display = 'none';
             indexEdit = null; 
+            const fechaApreh = document.getElementById('fechaApreh');
+            const hoy = new Date().toISOString().split('T')[0];
+            fechaApreh.value = hoy;
         }
 
         function fF(f) { return f ? f.split('-').reverse().join('/') : ""; }
@@ -557,6 +625,56 @@
             const buffer = await wb.xlsx.writeBuffer();
             saveAs(new Blob([buffer]), "BASE_COMISARIA.xlsx");
         }
+
+        // ==========================================
+        // FUNCIONES DE AUTOCOMPLETADO E IA (NUEVO)
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fechaApreh = document.getElementById('fechaApreh');
+            if (fechaApreh && !fechaApreh.value) {
+                const hoy = new Date().toISOString().split('T')[0];
+                fechaApreh.value = hoy;
+            }
+        });
+
+        document.getElementById('nombreCompleto').addEventListener('input', function(e) {
+            const busqueda = e.target.value.toUpperCase();
+            if (busqueda.length < 5) return; 
+
+            const record = db.find(r => r.nombreCompleto && r.nombreCompleto.includes(busqueda));
+
+            if (record) {
+                const camposAMemoria = [
+                    'dni', 'apodo', 'padre', 'madre', 'fechaNac', 
+                    'edad', 'estadoCivil', 'nacionalidad', 'domicilio', 'ciudad', 'provincia'
+                ];
+
+                camposAMemoria.forEach(campo => {
+                    const el = document.getElementById(campo);
+                    if (el && (!el.value || el.value === "SOLTERO" || el.value === "ARGENTINO" || el.value === "NO TIENE")) {
+                        el.value = record[campo] || el.value;
+                        el.style.backgroundColor = "#1e293b"; 
+                    }
+                });
+                e.target.style.border = "2px solid var(--success)";
+            } else {
+                e.target.style.border = "1px solid var(--border)";
+            }
+        });
+
+        document.getElementById('fechaNac').addEventListener('change', function(e) {
+            if (!e.target.value) return;
+            const nac = new Date(e.target.value);
+            const hoy = new Date();
+            let edadCalculada = hoy.getFullYear() - nac.getFullYear();
+            const m = hoy.getMonth() - nac.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) {
+                edadCalculada--;
+            }
+            document.getElementById('edad').value = edadCalculada;
+        });
+
     </script>
 </body>
 </html>
