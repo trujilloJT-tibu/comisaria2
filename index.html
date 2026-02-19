@@ -77,7 +77,6 @@
                 border-bottom: 2px solid var(--primary);
             }
 
-            /* Grid del Formulario */
             .grid-form {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -112,7 +111,6 @@
             .full-row { grid-column: 1 / -1; }
             textarea { min-height: 80px; }
 
-            /* Panel de Botones */
             .actions-panel {
                 background: #231f57;
                 border: 1px solid var(--primary);
@@ -154,13 +152,11 @@
             .btn-tool { background: #6366f1; }
             .btn-special { background: #db2777; }
 
-            /* Tabla */
             .table-container { overflow-x: auto; margin-top: 20px; border-radius: 12px; }
             table { width: 100%; border-collapse: collapse; background: var(--bg-card); }
             th { background: #334155; color: var(--text-main); padding: 15px; text-align: left; font-size: 0.8rem; }
             td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
             
-            /* ESTILOS DE COMPRESIÓN POR FECHA - MODIFICADO: SIEMPRE ABIERTO */
             .fecha-header {
                 background: #334155 !important;
                 color: var(--accent);
@@ -174,20 +170,17 @@
                 user-select: none;
             }
 
-            /* Estilo para los checkboxes rápidos en tabla */
             .check-cell { text-align: center; min-width: 45px; }
             .check-cell input { width: 18px; height: 18px; cursor: pointer; }
 
             #printArea { display: none; }
 
-            /* Editor */
             #editorElevacion {
                 width: 100%; min-height: 400px; background: white; color: black;
                 padding: 40px; border-radius: 8px; font-family: Arial, sans-serif;
                 text-transform: none; margin: 10px 0;
             }
 
-            /* Responsive para Celulares */
             @media (max-width: 768px) {
                 h1 { font-size: 1.3rem; }
                 .btn-save { grid-column: span 1; }
@@ -197,11 +190,11 @@
             }
         }
 
-        /* --- DISEÑO DE IMPRESIÓN --- */
+        /* --- DISEÑO DE IMPRESIÓN MEJORADO --- */
         @media print {
             @page { 
                 size: A4; 
-                margin: 1cm;
+                margin: 0;
             }
             
             html, body {
@@ -225,7 +218,6 @@
                 color: black; 
                 background: white; 
                 padding: 0;
-                page-break-inside: avoid;
             }
 
             .print-ficha {
@@ -239,38 +231,48 @@
                 font-weight: bold;
             }
 
-            .print-doc {
-                padding: 0.5cm 1.5cm;
+            .print-planilla {
+                padding: 1.5cm 2cm;
                 font-family: Arial, Helvetica, sans-serif;
-                font-size: 10.5pt;
-                line-height: 1.3; 
+                font-size: 11pt;
+                line-height: 1.6; 
                 color: black;
-                max-height: 27cm;
             }
 
-            .p-fecha { text-align: right; margin-bottom: 20px; }
-            .p-ref { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
-            .p-cuerpo { text-align: justify; text-indent: 4cm; margin-bottom: 15px; }
-            .p-firma { margin-top: 40px; text-align: right; font-weight: bold; line-height: 1.1; }
+            /* Documentos que requieren margen y mejor espaciado entre lineas */
+            .print-doc {
+                padding: 4cm 2cm 1cm 2cm;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 11pt;
+                line-height: 1.7; 
+                color: black;
+            }
 
+            /* Acta de Derechos con interlineado profesional */
             .print-acta {
-                padding: 0.5cm 1.2cm; 
+                padding: 4cm 2cm 1cm 2cm; 
                 font-family: "Times New Roman", Times, serif;
-                font-size: 10pt; 
+                font-size: 11pt; 
                 text-align: justify; 
                 text-transform: none; 
-                line-height: 1.2;
+                line-height: 1.5;
             }
 
-            .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 10px; }
-            .acta-punto { margin-bottom: 5px; padding-left: 10px; }
+            .p-fecha { text-align: right; margin-bottom: 25px; }
+            .p-ref { display: flex; justify-content: space-between; margin-bottom: 25px; font-weight: bold; }
+            .p-cuerpo { text-align: justify; text-indent: 3cm; margin-bottom: 20px; line-height: 1.7; }
+            .p-firma { margin-top: 50px; text-align: right; font-weight: bold; line-height: 1.2; }
+
+            .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 13pt; margin-bottom: 15px; }
+            .acta-punto { margin-bottom: 10px; padding-left: 10px; line-height: 1.4; }
             .planilla-linea { border-bottom: 1px solid black; display: inline-block; min-width: 250px; text-transform: uppercase; }
             
             pre { 
                 white-space: pre-wrap !important; 
                 word-wrap: break-word !important; 
                 font-size: 10pt !important;
-                margin: 5px 0 !important;
+                margin: 10px 0 !important;
+                line-height: 1.4;
             }
 
             [contenteditable="true"] { border: none; outline: none; }
@@ -318,7 +320,7 @@
                     <div class="form-group"><label>Fiscalía</label><input type="text" id="fiscalia"></div>
                     <div class="form-group"><label>Fecha del Hecho</label><input type="date" id="fechaApreh"></div>
                     <div class="form-group"><label>Oficial Sumariante</label><input type="text" id="sumariante" value="SUB OFICIAL TRUJILLO"></div>
-                    <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="QUEDA DETENIDO"></div>
+                    <div class="form-group"><label>Orden Judicial</label><input type="text" id="orden" value="RECUPERA SU LIBERTAD A TENOR DEL ART 218 CPP"></div>
                     <input type="hidden" id="elevacionPersonalizada">
                 </div>
             </div>
@@ -411,7 +413,6 @@
                 renderTabla();
             });
 
-        // FUNCIÓN NUEVA: ACTUALIZAR CHECKBOXES DIRECTO EN FIREBASE
         async function actualizarCheck(id, campo, valor) {
             const data = {};
             data[campo] = valor;
@@ -494,8 +495,6 @@
             });
         }
 
-        // Se eliminó la función toggleFecha para mantener la tabla siempre abierta
-
         function cargar(i) {
             indexEdit = i;
             const r = db[i];
@@ -535,7 +534,7 @@
                         <div style="text-align: right;">${hoy}.-</div>
                         <p>MINISTERIO PUBLICO DE LA ACUSACION<br>FISCALIA DE FLAGRANCIA Y TURNO.<br>“ FISCAL”</p>
                         <p>A.U.O.P.<br>Cría. 2da.<br>Nota Nro.________/26.- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OBJETO: ELEVAR ACTUACIONES<br>Ref. CAUSA “${r.nroCausa || ''}”/26</p>
-                        <p style="text-align: justify; text-indent: 5cm;">Por medio de la presente elevo a Usted, en referencia a actuaciones por un hecho caratulado a prima facie "${r.causaFinal || ''}", en donde resultare victima la llamada "${r.victima || ''}" e imputado el llamado "${r.nombreCompleto || ''}" para su conocimiento, consideración y demás fines legales que estime corresponder.-</p>
+                        <p style="text-align: justify; text-indent: 3cm;">Por medio de la presente elevo a Usted, en referencia a actuaciones por un hecho caratulado a prima facie "${r.causaFinal || ''}", en donde resultare victima la llamada "${r.victima || ''}" e imputado el llamado "${r.nombreCompleto || ''}" para su conocimiento, consideración y demás fines legales que estime corresponder.-</p>
                         <br><p>Saludo a Ud. muy atte.</p><br><br>
                         <div style="text-align: right;">${r.sumariante || ''}<br>COMISARIA 2° URII</div>
                     </div>`;
@@ -570,7 +569,7 @@
                 area.innerHTML = `<div class="print-ficha"><div>${r.nombreCompleto}</div><div style="margin-bottom:1.5em"></div><div>${r.padre}</div><div>${r.madre}</div><div>${r.nacionalidad}</div><div>${r.provincia}</div><div>${r.ciudad}</div><div>${fechaN} &nbsp; ${r.edad} AÑOS</div><div>D.N.I. Nº ${r.dni}</div><div style="margin-bottom:1.5em"></div><div>${r.domicilio}</div></div>`;
             }
             else if(tipo === 'planilla') {
-                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom:15px; font-size:12pt">PLANILLA DE FILIACION PRONTUARIAL</h2><p><strong>APELLIDO Y NOMBRES:</strong> <span class="planilla-linea">${r.nombreCompleto}</span></p><p><strong>APODO / ALIAS:</strong> <span class="planilla-linea">${r.apodo}</span></p><p><strong>HIJO DE (PADRE):</strong> <span class="planilla-linea">${r.padre}</span></p><p><strong>HIJO DE (MADRE):</strong> <span class="planilla-linea">${r.madre}</span></p><p><strong>NACIONALIDAD:</strong> <span class="planilla-linea">${r.nacionalidad}</span></p><p><strong>ESTADO CIVIL:</strong> <span class="planilla-linea">${r.estadoCivil}</span></p><p><strong>FECHA DE NACIMIENTO:</strong> <span class="planilla-linea">${fechaN}</span></p><p><strong>EDAD:</strong> <span class="planilla-linea">${r.edad} AÑOS</span></p><p><strong>DOMICILIADO EN CALLE:</strong> <span class="planilla-linea">${r.domicilio}</span></p><p><strong>DOCUMENTO TIPO:</strong> <span class="planilla-linea">D.N.I N° ${r.dni}</span></p><p><strong>PRIO N°:</strong> <span class="planilla-linea">${r.nroPrio}</span></p><div style="margin-top:10px"><strong>CAPTURAS Y/O PARADEROS:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 10pt; margin-top: 5px; text-transform: uppercase;">${r.capturas}</pre></div><div style="margin-top:10px"><strong>ANTECEDENTES PENALES:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 10pt; margin-top: 5px; text-transform: uppercase;">${r.antecedentes}</pre></div><p style="font-size:9pt; margin-top:15px"><strong>NOTA:</strong> DATOS SUMINISTRADOS VIA TELEFONICA POR OFICINA 10 PDI.</p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
+                area.innerHTML = `<div class="print-planilla"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom:15px; font-size:12pt">PLANILLA DE FILIACION PRONTUARIAL</h2><p><strong>APELLIDO Y NOMBRES:</strong> <span class="planilla-linea">${r.nombreCompleto}</span></p><p><strong>APODO / ALIAS:</strong> <span class="planilla-linea">${r.apodo}</span></p><p><strong>HIJO DE (PADRE):</strong> <span class="planilla-linea">${r.padre}</span></p><p><strong>HIJO DE (MADRE):</strong> <span class="planilla-linea">${r.madre}</span></p><p><strong>NACIONALIDAD:</strong> <span class="planilla-linea">${r.nacionalidad}</span></p><p><strong>ESTADO CIVIL:</strong> <span class="planilla-linea">${r.estadoCivil}</span></p><p><strong>FECHA DE NACIMIENTO:</strong> <span class="planilla-linea">${fechaN}</span></p><p><strong>EDAD:</strong> <span class="planilla-linea">${r.edad} AÑOS</span></p><p><strong>DOMICILIADO EN CALLE:</strong> <span class="planilla-linea">${r.domicilio}</span></p><p><strong>DOCUMENTO TIPO:</strong> <span class="planilla-linea">D.N.I N° ${r.dni}</span></p><p><strong>PRIO N°:</strong> <span class="planilla-linea">${r.nroPrio}</span></p><div style="margin-top:10px"><strong>CAPTURAS Y/O PARADEROS:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 10pt; margin-top: 5px; text-transform: uppercase;">${r.capturas}</pre></div><div style="margin-top:10px"><strong>ANTECEDENTES PENALES:</strong><pre style="white-space: pre-wrap; font-family: Arial; font-size: 10pt; margin-top: 5px; text-transform: uppercase;">${r.antecedentes}</pre></div><p style="font-size:9pt; margin-top:15px"><strong>NOTA:</strong> DATOS SUMINISTRADOS VIA TELEFONICA POR OFICINA 10 PDI.</p><div class="p-firma">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
             }
             else if(tipo === 'cotejo') {
                 area.innerHTML = `
@@ -619,12 +618,12 @@
                     <div class="print-acta">
                         <div class="acta-titulo">ACTA DE CONOCIMIENTO DE DERECHOS DEL IMPUTADO</div>
                         <p><strong>Derechos del imputado - Artículo 100 y 101 del Código Procesal Penal</strong></p>
-                        <p>Toda persona detenida o indicada como autor o partícipe de un hecho delictivo cuenta con los siguientes derechos:</p>
-                        <div class="acta-punto">. Derecho a elegir un abogado defensor de su confianza o de oficio (SPPDP).</div>
-                        <div class="acta-punto">. Derecho a conferenciar en forma privada y libre con su letrado defensor.</div>
-                        <div class="acta-punto">. Derecho constitucional de no declarar sin que ello signifique presunción en su contra.</div>
-                        <div class="acta-punto">. Derecho a que se le hagan saber los hechos atribuídos y evidencias en su contra.</div>
-                        <div class="acta-punto">. Derecho a solicitar diligencias probatorias útiles para su defensa.</div>
+                        <p>Toda persona detenida o indicada como autor o partícipe de un hecho delictivo cuenta con los siguientes derechos, los cuales puede hacer valer en cualquier momento de la investigación y hasta la terminación del proceso seguido en su contra:</p>
+                        <div class="acta-punto">. 	Derecho a elegir un abogado defensorde su confianza, y en caso de no ejercer su derecho será asistido por un defensor de oficio integrante del Servicio Público Provincial de la Defensa Penal (SPPDP). Asimismo, en éste momento se le solicitará que designe abogado defensor o que manifieste su voluntad de ser asistido por el SPPDP.</div>
+                        <div class="acta-punto">. 	Derecho a conferenciar en forma privada y librecon su letrado defensor, antes de prestar declaración o realizar un acto que requiera su presencia.</div>
+                        <div class="acta-punto">. 	Que puede hacer uso de su derecho constitucional de no declarar sin que ello signifique una presunción en su contra y su declaración será válida siempre que este presente su defensor.</div>
+                        <div class="acta-punto">. 	Que tiene derecho a solicitar al fiscal o fiscal adjunto que le haga saber los hechos que se le atribuyen, su calificación legal y las evidencias en su contra.</div>
+                        <div class="acta-punto">. 	Que tiene derecho a solicitar que se practiquen diligencias probatorias que estime de utilidad.</div>
                         
                         <p>En Rosario, a la fecha <strong>${hoy}</strong>, ante quien suscribe, se notifica de los derechos a <strong>${r.nombreCompleto}</strong>, nacionalidad <strong>${r.nacionalidad}</strong>, nacido el día <strong>${fechaN}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, hijo de <strong>${r.padre}</strong> y de <strong>${r.madre}</strong>, domiciliado en calle <strong>${r.domicilio}</strong>. Manifiesta que <strong>SI SABE LEER Y ESCRIBIR</strong>, y se desempeña como <strong>DESOCUPADO</strong>.</p>
                         
@@ -637,7 +636,7 @@
                     </div>`;
             }
             else if(tipo === 'const_domicilio') {
-                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; font-size:12pt">ACTA DE CONSTITUCIÓN DE DOMICILIO</h2><div class="p-cuerpo" style="text-align: justify;">En la ciudad de Rosario, a los <strong>${hoy}</strong>, el funcionario Policial Actuante hace constar: Que por orden del DEFENSOR PENAL EN TURNO, se manda a comparecer a despacho a <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, domiciliado en <strong>${r.domicilio}</strong>, a quien se lo notifica que deberá comparecer en calle SARMIENTO 2850 DEFENSORIA PUBLICA, próximo dia habil (08:00hs a 19:00hs), a fin de constituir domicilio. Se da por finalizado el acto firmando de conformidad.</div><div style="margin-top:40px; display:flex; justify-content:space-around; text-align:center;"><div>____________________<br>FIRMA NOTIFICADO</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; font-size:12pt">ACTA DE CONSTITUCIÓN DE DOMICILIO</h2><div class="p-cuerpo" style="text-align: justify;">En la ciudad de Rosario, a los <strong>${hoy}</strong>, el funcionario Policial Actuante, personal adscripto a la Seccional 2° de la Policía de la Provincia de Santa Fe, Unidad Regional II – Rosario, a los fines legales que diera lugar hace constar: Que por así haberlo ordenado el defensor en turno, se manda a comparecer a despacho al llamado <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, domiciliado en <strong>${r.domicilio}</strong>, a quien mediante este acto se lo notifica que deberá presentarse en oficina de defensoría pública sito  en calle sarmiento 2850, dentro de las 72 horas hábiles, para regularizar su situación de domicilio. Con lo que no siendo para más se da por finalizado el presente acto del que previa lectura y ratificación que de por si se hace de su total contenido firma de conformidad y para constancia.</div><div style="margin-top:40px; display:flex; justify-content:space-around; text-align:center;"><div>____________________<br>FIRMA NOTIFICADO</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
             }
             else if(tipo === 'prohibicion') {
                 area.innerHTML = `
@@ -645,7 +644,7 @@
                         <div class="p-fecha">${hoy}</div>
                         <h2 style="text-align:center; text-decoration:underline; margin-bottom: 15px; font-size:12pt">ACTA DE NOTIFICACIÓN PROHIBICION DE ACERCAMIENTO</h2>
                         <div class="p-cuerpo" style="text-align: justify;">
-                            En Rosario a los <strong>${hoy}</strong>, se notifica a <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, que por ORDEN DE <strong>${r.fiscalia}</strong>, se dispone la <strong>PROHIBICIÓN DE ACERCAMIENTO AL DOMICILIO POR 72 HS en un RADIO DE 300 METROS E IMPEDIMENTO DE CONTACTO A ${r.victima}</strong>, domicilio en <strong>${r.domicilioVictima}</strong>. Consultado si entiende lo expuesto el mismo responde que SI. Firma para constancia.
+                        En Rosario a los <strong>${hoy}</strong>, el personal policial actuante numerario de Seccional 2da. de policía U.R. II hago constar que se manda a comparecer despacho al llamado <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, a quien en este acto por ORDEN DE LA FISCAL EN TURNO <strong>${r.fiscalia}</strong>, se procede a notificar de   PROHIBICIÓN DE ACERCAMIENTO AL DOMICILIO POR 72 HS E IMPEDIMENTO DE CONTACTO A ${r.victima}</strong>, domicilio en <strong>${r.domicilioVictima}</strong>. Consultado si entiende lo expuesto el mismo responde que SI. Se hace entrega de una copia de acta de notificación. Con lo que no siendo para más, se da por finalizada la presente de la que previa lectura y ratificación de su contenido firma el llamado en conformidad y para constancia ante mi quien suscribo y certifico.-
                         </div>
                         <div class="p-firma" style="margin-top: 40px;">${r.sumariante}<br>COMISARIA 2° URII</div>
                     </div>`;
@@ -654,13 +653,13 @@
                 area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; font-size:12pt">ACTA DE ENTREGA DE RODADO</h2><p>Se hace entrega del rodado secuestrado a <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>.</p><p>DETALLE: <strong>${r.secuestro}</strong></p><div class="p-firma" style="margin-top:4cm">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
             }
             else if(tipo === 'nota_medico') {
-                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><p><strong>SEÑOR JEFE DEL RECONOCIMIENTO MÉDICO POLICIAL</strong></p><p>Solicito examen médico para el demorado <strong>${r.nombreCompleto}</strong>, D.N.I. <strong>${r.dni}</strong>.</p><div class="p-firma" style="margin-top:5cm">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><p><strong>SEÑOR JEFE DEL RECONOCIMIENTO MÉDICO POLICIAL</strong></p><p>Solicito examen médico para el demorado <strong>${r.nombreCompleto}</strong>, D.N.I. <strong>${r.dni}</strong>.</p><div class="p-firma" style="margin-top:3cm">${r.sumariante}<br>COMISARIA 2° URII</div></div>`;
             }
             else if(tipo === 'notificacion') {
                 area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; font-size:12pt">ACTA DE NOTIFICACIÓN</h2><p>Se notifica a <strong>${r.nombreCompleto}</strong> de: ___________________________________________________________________</p><div class="p-firma" style="margin-top:5cm">${r.sumariante}</div></div>`;
             }
             else if(tipo === 'entrega_pert') {
-                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom: 15px; font-size:12pt">ACTA DE ENTREGA DE PERTENENCIAS</h2><div style="text-align: justify;">En Rosario a los <strong>${hoy}</strong>, se hace entrega a <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, de los elementos en custodia: <strong>${r.pertenencias}</strong>. Firma de conformidad.</div><div style="margin-top:60px; display:flex; justify-content:space-around; text-align:center;"><div>__________________________<br>FIRMA DEL RECEPTOR</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
+                area.innerHTML = `<div class="print-doc"><div class="p-fecha">${hoy}</div><h2 style="text-align:center; text-decoration:underline; margin-bottom: 15px; font-size:12pt">ACTA DE ENTREGA DE PERTENENCIAS</h2><div class="p-cuerpo" style="text-align: justify;">En Rosario a los <strong>${hoy}</strong>, el Funcionario Policial actuante, numerario de esta Comisaría 2º de Policía, dependiente de la Agrupación Unidades Orden Público U.R.II, a los fines legales que diera lugar HAGO CONSTAR: Que se manda comparecer a despacho al llamado <strong>${r.nombreCompleto}</strong>, D.N.I. Nº <strong>${r.dni}</strong>, de los elementos en custodia: <strong>${r.pertenencias}</strong> Recibiendo en conformidad. Con lo que no siendo para más se da por finalizado el presente acto, del que previa lectura y ratificación de su total e íntegro contenido, firma el causante por ante mí que suscribo y certifico. Firma de conformidad.</div><div style="margin-top:60px; display:flex; justify-content:space-around; text-align:center;"><div>__________________________<br>FIRMA DEL RECEPTOR</div><div>____________________<br>${r.sumariante}<br>COMISARIA 2° URII</div></div></div>`;
             }
 
             window.print();
