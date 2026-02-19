@@ -19,6 +19,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --ia-color: #8b5cf6;
         }
 
         /* --- DISEÑO DE PANTALLA --- */
@@ -151,6 +152,14 @@
             .btn-secondary { background: #475569; }
             .btn-tool { background: #6366f1; }
             .btn-special { background: #db2777; }
+            .btn-ia { background: var(--ia-color); }
+
+            /* Semáforo de plazos */
+            .status-timer { font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; }
+            .status-ok { background: #065f46; color: #34d399; }
+            .status-warning { background: #92400e; color: #fbbf24; }
+            .status-danger { background: #991b1b; color: #f87171; animation: blink 1s infinite; }
+            @keyframes blink { 50% { opacity: 0.5; } }
 
             .table-container { overflow-x: auto; margin-top: 20px; border-radius: 12px; }
             table { width: 100%; border-collapse: collapse; background: var(--bg-card); }
@@ -180,102 +189,24 @@
                 padding: 40px; border-radius: 8px; font-family: Arial, sans-serif;
                 text-transform: none; margin: 10px 0;
             }
-
-            @media (max-width: 768px) {
-                h1 { font-size: 1.3rem; }
-                .btn-save { grid-column: span 1; }
-                .grid-form { grid-template-columns: 1fr; }
-                .container { padding: 5px; }
-                .actions-panel { position: relative; bottom: 0; }
-            }
         }
 
-        /* --- DISEÑO DE IMPRESIÓN MEJORADO --- */
+        /* --- DISEÑO DE IMPRESIÓN --- */
         @media print {
-            @page { 
-                size: A4; 
-                margin: 0;
-            }
-            
-            html, body {
-                height: 99%;
-                overflow: hidden;
-            }
-
+            @page { size: A4; margin: 0; }
+            html, body { height: 99%; overflow: hidden; }
             body * { visibility: hidden; text-transform: uppercase; }
-            
-            #printArea, #printArea * { 
-                visibility: visible; 
-            }
-
-            #printArea {
-                display: block !important; 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 100%;
-                height: 100%;
-                color: black; 
-                background: white; 
-                padding: 0;
-            }
-
-            .print-ficha {
-                padding-top: 1cm; 
-                margin-left: 6.5cm; 
-                width: 8cm;
-                text-align: center; 
-                font-family: "Courier New", monospace;
-                font-size: 11pt; 
-                line-height: 1.4; 
-                font-weight: bold;
-            }
-
-            .print-planilla {
-                padding: 1.5cm 2cm;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 11pt;
-                line-height: 1.6; 
-                color: black;
-            }
-
-            /* Documentos que requieren margen y mejor espaciado entre lineas */
-            .print-doc {
-                padding: 4cm 2cm 1cm 2cm;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 11pt;
-                line-height: 1.7; 
-                color: black;
-            }
-
-            /* Acta de Derechos con interlineado profesional */
-            .print-acta {
-                padding: 4cm 2cm 1cm 2cm; 
-                font-family: "Times New Roman", Times, serif;
-                font-size: 11pt; 
-                text-align: justify; 
-                text-transform: none; 
-                line-height: 1.5;
-            }
-
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; height: 100%; color: black; background: white; padding: 0; }
+            .print-ficha { padding-top: 1cm; margin-left: 6.5cm; width: 8cm; text-align: center; font-family: "Courier New", monospace; font-size: 11pt; line-height: 1.4; font-weight: bold; }
+            .print-planilla { padding: 1.5cm 2cm; font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.6; color: black; }
+            .print-doc { padding: 4cm 2cm 1cm 2cm; font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.7; color: black; }
+            .print-acta { padding: 4cm 2cm 1cm 2cm; font-family: "Times New Roman", Times, serif; font-size: 11pt; text-align: justify; text-transform: none; line-height: 1.5; }
             .p-fecha { text-align: right; margin-bottom: 25px; }
             .p-ref { display: flex; justify-content: space-between; margin-bottom: 25px; font-weight: bold; }
             .p-cuerpo { text-align: justify; text-indent: 3cm; margin-bottom: 20px; line-height: 1.7; }
             .p-firma { margin-top: 50px; text-align: right; font-weight: bold; line-height: 1.2; }
-
-            .acta-titulo { text-align: center; font-weight: bold; text-decoration: underline; font-size: 13pt; margin-bottom: 15px; }
-            .acta-punto { margin-bottom: 10px; padding-left: 10px; line-height: 1.4; }
-            .planilla-linea { border-bottom: 1px solid black; display: inline-block; min-width: 250px; text-transform: uppercase; }
-            
-            pre { 
-                white-space: pre-wrap !important; 
-                word-wrap: break-word !important; 
-                font-size: 10pt !important;
-                margin: 10px 0 !important;
-                line-height: 1.4;
-            }
-
-            [contenteditable="true"] { border: none; outline: none; }
+            pre { white-space: pre-wrap !important; word-wrap: break-word !important; font-size: 10pt !important; margin: 10px 0 !important; line-height: 1.4; }
         }
     </style>
 </head>
@@ -284,6 +215,16 @@
         <header>
             <h1>✙ COMISARÍA 2da ROSARIO ✙</h1>
         </header>
+
+        <div class="card" style="border: 2px solid var(--success); background: #0f172a;">
+            <div class="section-title" style="color: var(--success); border-color: var(--success);">
+                📲 IMPORTAR DESDE WHATSAPP (DATOS Y ANTECEDENTES)
+            </div>
+            <textarea id="rawInput" placeholder="Pega aquí el texto que te pasaron por WhatsApp..." style="width: 100%; min-height: 100px; margin-bottom: 10px; border-color: var(--success);"></textarea>
+            <button type="button" onclick="procesarWhatsApp()" style="background: var(--success); width: 100%; font-size: 1rem;">
+                ⚡ INTERPRETAR Y CARGAR DATOS
+            </button>
+        </div>
         
         <form id="registroForm">
             <div class="card">
@@ -329,26 +270,23 @@
                 <div class="section-title" style="margin-bottom:10px; border:none">⚡ DOCUMENTACIÓN</div>
                 <div class="button-group">
                     <button type="button" class="btn-save" onclick="guardarDato()">💾 GUARDAR EN RED</button>
-                    
                     <button type="button" class="btn-print" onclick="imprimir('ficha')">🖨️ FICHA</button>
                     <button type="button" class="btn-print" onclick="imprimir('planilla')">📝 PLANILLA</button>
                     <button type="button" class="btn-print" onclick="imprimir('cotejo')">📄 COTEJO</button>
                     <button type="button" class="btn-print" style="background:#4338ca" onclick="imprimir('afis')">🆔 AFIS</button>
                     <button type="button" class="btn-special" onclick="imprimir('insercion')">📥 INSERCIÓN</button>
-                    <button type="button" class="btn-print" onclick="imprimir('acta')">📜 DERECHOS</button>
-                    
+                    <button type="button" class="btn-print" onclick="imprimir('derechos')">📜 DERECHOS</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('const_domicilio')">🏠 CONST. DOM.</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('prohibicion')">🚫 PROHIBICION</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('entrega_rodado')">🏍️ ENT. RODADO</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('nota_medico')">⚕️ NOTA MEDICO</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('notificacion')">🔔 NOTIFICACION</button>
                     <button type="button" class="btn-secondary" onclick="imprimir('entrega_pert')">📦 ENT. PERTEN.</button>
-                    
                     <button type="button" class="btn-tool" style="background: #2563eb;" onclick="abrirEditorElevacion()">📄 ELEVACIÓN</button>
                     <button type="button" class="btn-tool" onclick="exportarExcel()">📊 EXCEL</button>
                     <button type="button" class="btn-tool" onclick="document.getElementById('inputExcel').click()">📥 IMPORTAR</button>
                 </div>
-                <button type="button" onclick="Nuevo()" style="background:#475569; width: 100%;">🧹 Nuevo FORMULARIO</button>
+                <button type="button" onclick="Nuevo()" style="background:#475569; width: 100%;">Sweep 🧹 Nuevo FORMULARIO</button>
                 <input type="file" id="inputExcel" style="display:none" accept=".xlsx" onchange="leerExcel(this)">
             </div>
             
@@ -357,6 +295,7 @@
                     <div class="section-title" style="color: #0f172a; border-color:#0f172a">📝 EDITOR DE ELEVACIÓN</div>
                     <div id="editorElevacion" contenteditable="true"></div>
                     <div class="button-group" style="margin-top:15px;">
+                        <button type="button" class="btn-ia" onclick="mejorarConIA()">✨ MEJORAR REDACCIÓN (IA)</button>
                         <button type="button" class="btn-save" onclick="prepararImpresionElevacion()">🖨️ CONFIRMAR E IMPRIMIR</button>
                         <button type="button" class="btn-secondary" onclick="document.getElementById('contenedorEditor').style.display='none'">❌ CANCELAR</button>
                     </div>
@@ -365,17 +304,18 @@
         </form>
 
         <div class="card">
-            <div class="section-title">📋 REGISTROS (MÉDICO | DOM | ANT | FOTO)</div>
+            <div class="section-title">📋 REGISTROS (MÉDICO | DOM | ANT | FOTO | PLAZOS)</div>
             <div class="table-container">
                 <table id="tablaRegistros">
                     <thead>
                         <tr>
                             <th>APREHENDIDO</th>
                             <th>DNI</th>
-                            <th class="check-cell" title="Médico">🩺</th>
-                            <th class="check-cell" title="Domicilio">🏠</th>
-                            <th class="check-cell" title="Antecedentes">📜</th>
-                            <th class="check-cell" title="Foto">📸</th>
+                            <th>⏱️ TIEMPO</th>
+                            <th class="check-cell">🩺</th>
+                            <th class="check-cell">🏠</th>
+                            <th class="check-cell">📜</th>
+                            <th class="check-cell">📸</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -413,9 +353,103 @@
                 renderTabla();
             });
 
+        // --- LÓGICA DE WHATSAPP ---
+        function procesarWhatsApp() {
+            const rawText = document.getElementById('rawInput').value;
+            if (!rawText) return;
+
+            const lineas = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
+            let idxNombre = lineas.findIndex(l => !l.toLowerCase().includes("buenos") && !l.toLowerCase().includes("subof") && !l.toLowerCase().includes("cria"));
+            if (idxNombre === -1) idxNombre = 0;
+
+            document.getElementById('nombreCompleto').value = lineas[idxNombre].toUpperCase();
+            
+            const lineaInfo = lineas[idxNombre + 1] || "";
+            if (lineaInfo.toUpperCase().includes("A/S")) {
+                document.getElementById('nacionalidad').value = "ARGENTINO";
+                document.getElementById('estadoCivil').value = "SOLTERO";
+                const edad = lineaInfo.match(/\d+/);
+                if (edad) document.getElementById('edad').value = edad[0];
+            }
+
+            const lineaDni = lineas[idxNombre + 2] || "";
+            document.getElementById('dni').value = lineaDni.replace(/\./g, "").match(/\d+/) ? lineaDni.replace(/\./g, "").match(/\d+/)[0] : "";
+
+            const lineaNac = lineas[idxNombre + 3] || "";
+            if (lineaNac.includes("/")) {
+                const p = lineaNac.split("/");
+                let anio = p[2].length === 2 ? (parseInt(p[2]) > 30 ? "19"+p[2] : "20"+p[2]) : p[2];
+                document.getElementById('fechaNac').value = `${anio}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+            }
+
+            if (lineas[idxNombre + 4]) document.getElementById('domicilio').value = lineas[idxNombre + 4].toUpperCase();
+            if (lineas[idxNombre + 5]) document.getElementById('padre').value = lineas[idxNombre + 5].toUpperCase();
+            if (lineas[idxNombre + 6]) document.getElementById('madre').value = lineas[idxNombre + 6].toUpperCase();
+
+            let antArr = [];
+            lineas.forEach(l => {
+                const UP = l.toUpperCase();
+                if (l.match(/\d+\/\d+\/\d+/)) {
+                    antArr.push(UP);
+                    if (UP.includes(" FF")) document.getElementById('fiscalia').value = "FISCALÍA DE FLAGRANCIA";
+                }
+                if (l.includes(".") && l.split(".").length >= 3 && !l.includes("/")) {
+                    document.getElementById('nroPrio').value = l.replace(/[^\d.]/g, "");
+                }
+                if (UP.includes("NO CAPTURA") || UP.includes("NI/NC/SS") || UP.includes("NO POSEE CAPTURA")) {
+                    document.getElementById('capturas').value = "NO POSEE IMPEDIMENTOS LEGALES VIGENTES";
+                }
+                if (UP.includes(" FF")) document.getElementById('fiscalia').value = "FISCALÍA DE FLAGRANCIA";
+            });
+            if (antArr.length > 0) document.getElementById('antecedentes').value = antArr.join('\n');
+            
+            document.getElementById('rawInput').value = "";
+            alert("✅ DATOS INTERPRETADOS");
+        }
+
+        // --- LÓGICA DE IA ---
+        async function mejorarConIA() {
+            const API_KEY = "TU_API_KEY_AQUÍ"; 
+            const editor = document.getElementById('editorElevacion');
+            const original = editor.innerText;
+            if (API_KEY === "TU_API_KEY_AQUÍ") return alert("Configure la clave API primero.");
+
+            try {
+                editor.innerHTML = "⌛ TRABAJANDO...";
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `Redacta de forma profesional y legal para una elevación a fiscalía argentina: ${original}` }] }]
+                    })
+                });
+                const data = await res.json();
+                editor.innerText = data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                alert("Error de IA");
+                editor.innerText = original;
+            }
+        }
+
+        // --- SEMÁFORO DE PLAZOS ---
+        function getStatusClass(timestamp) {
+            if (!timestamp) return "";
+            const diff = (new Date() - timestamp.toDate()) / 3600000;
+            if (diff > 12) return "status-danger";
+            if (diff > 6) return "status-warning";
+            return "status-ok";
+        }
+
+        function getTiempo(timestamp) {
+            if (!timestamp) return "--:--";
+            const diffMs = (new Date() - timestamp.toDate());
+            const h = Math.floor(diffMs / 3600000);
+            const m = Math.floor((diffMs % 3600000) / 60000);
+            return `${h}h ${m}m`;
+        }
+
         async function actualizarCheck(id, campo, valor) {
-            const data = {};
-            data[campo] = valor;
+            const data = {}; data[campo] = valor;
             await dbCloud.collection("registros").doc(id).update(data);
         }
 
@@ -427,67 +461,43 @@
 
             try {
                 if (indexEdit !== null) {
-                    const id = db[indexEdit].id;
-                    await dbCloud.collection("registros").doc(id).update(r);
+                    await dbCloud.collection("registros").doc(db[indexEdit].id).update(r);
                     indexEdit = null;
                 } else {
                     await dbCloud.collection("registros").add(r);
                 }
                 document.getElementById('registroForm').reset();
-                alert("✅ SINCRONIZADO CON ÉXITO");
-            } catch (error) {
-                alert("❌ ERROR: Verifique conexión.");
-            }
-        }
-
-        async function eliminarDato(i) {
-            if(confirm("¿ELIMINAR ESTE REGISTRO?")) {
-                const id = db[i].id;
-                await dbCloud.collection("registros").doc(id).delete();
-                indexEdit = null;
-            }
+                alert("✅ GUARDADO");
+            } catch (e) { alert("❌ ERROR"); }
         }
 
         function renderTabla() {
             const tbody = document.getElementById('cuerpoTabla');
             tbody.innerHTML = '';
-
             const grupos = db.reduce((acc, r) => {
-                let fechaKey = "SIN FECHA";
-                if (r.timestamp) {
-                    const d = r.timestamp.toDate ? r.timestamp.toDate() : new Date(r.timestamp);
-                    fechaKey = d.toLocaleDateString('es-AR');
-                } else if (r.fechaApreh) {
-                    fechaKey = fF(r.fechaApreh);
-                }
-                if (!acc[fechaKey]) acc[fechaKey] = [];
-                acc[fechaKey].push(r);
+                let fKey = r.timestamp ? r.timestamp.toDate().toLocaleDateString('es-AR') : "HOY";
+                if (!acc[fKey]) acc[fKey] = [];
+                acc[fKey].push(r);
                 return acc;
             }, {});
-
             Object.keys(grupos).forEach(fecha => {
-                const header = document.createElement('tr');
-                header.innerHTML = `
-                    <td colspan="7" class="fecha-header">
-                        📅 REGISTROS DEL DÍA: ${fecha} (${grupos[fecha].length})
-                    </td>
-                `;
-                tbody.appendChild(header);
-
+                const trH = document.createElement('tr');
+                trH.innerHTML = `<td colspan="8" class="fecha-header">📅 REGISTROS DEL DÍA: ${fecha}</td>`;
+                tbody.appendChild(trH);
                 grupos[fecha].forEach(r => {
-                    const realIndex = db.findIndex(item => item.id === r.id);
+                    const realIdx = db.findIndex(i => i.id === r.id);
                     const tr = document.createElement('tr');
-
                     tr.innerHTML = `
                         <td style="font-weight:bold">${r.nombreCompleto || ''}</td>
                         <td>${r.dni || ''}</td>
-                        <td class="check-cell"><input type="checkbox" ${r.checkMed ? 'checked' : ''} onchange="actualizarCheck('${r.id}', 'checkMed', this.checked)"></td>
-                        <td class="check-cell"><input type="checkbox" ${r.checkDom ? 'checked' : ''} onchange="actualizarCheck('${r.id}', 'checkDom', this.checked)"></td>
-                        <td class="check-cell"><input type="checkbox" ${r.checkAnt ? 'checked' : ''} onchange="actualizarCheck('${r.id}', 'checkAnt', this.checked)"></td>
-                        <td class="check-cell"><input type="checkbox" ${r.checkFoto ? 'checked' : ''} onchange="actualizarCheck('${r.id}', 'checkFoto', this.checked)"></td>
+                        <td><span class="status-timer ${getStatusClass(r.timestamp)}">${getTiempo(r.timestamp)}</span></td>
+                        <td class="check-cell"><input type="checkbox" ${r.checkMed?'checked':''} onchange="actualizarCheck('${r.id}','checkMed',this.checked)"></td>
+                        <td class="check-cell"><input type="checkbox" ${r.checkDom?'checked':''} onchange="actualizarCheck('${r.id}','checkDom',this.checked)"></td>
+                        <td class="check-cell"><input type="checkbox" ${r.checkAnt?'checked':''} onchange="actualizarCheck('${r.id}','checkAnt',this.checked)"></td>
+                        <td class="check-cell"><input type="checkbox" ${r.checkFoto?'checked':''} onchange="actualizarCheck('${r.id}','checkFoto',this.checked)"></td>
                         <td>
-                            <button onclick="cargar(${realIndex})" style="background:var(--warning); display:inline-flex; padding:5px 10px;">EDITAR</button>
-                            <button onclick="eliminarDato(${realIndex})" style="background:var(--danger); display:inline-flex; padding:5px 10px; margin-left:5px;">ELIMINAR</button>
+                            <button onclick="cargar(${realIdx})" style="background:var(--warning); padding:4px 8px;">EDITAR</button>
+                            <button onclick="eliminarDato(${realIdx})" style="background:var(--danger); padding:4px 8px;">X</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -503,35 +513,25 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function Nuevo() { 
-            document.getElementById('registroForm').reset(); 
-            document.getElementById('contenedorEditor').style.display = 'none';
-            indexEdit = null; 
-            const fechaApreh = document.getElementById('fechaApreh');
-            const hoy = new Date().toISOString().split('T')[0];
-            fechaApreh.value = hoy;
+        async function eliminarDato(i) {
+            if(confirm("¿ELIMINAR?")) await dbCloud.collection("registros").doc(db[i].id).delete();
         }
 
+        function Nuevo() { document.getElementById('registroForm').reset(); indexEdit = null; }
+
         function fF(f) { return f ? f.split('-').reverse().join('/') : ""; }
-        function getHoy() {
-            const d = new Date();
-            const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            return `ROSARIO, ${d.toLocaleDateString('es-AR', opciones)}`.toUpperCase();
-        }
+        function getHoy() { return `ROSARIO, ${new Date().toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long', year:'numeric'})}`.toUpperCase(); }
 
         function abrirEditorElevacion() {
             const r = indexEdit !== null ? db[indexEdit] : null;
-            if(!r) return alert("SELECCIONE UN REGISTRO PRIMERO");
+            if(!r) return alert("SELECCIONE REGISTRO");
             const editor = document.getElementById('editorElevacion');
-            const contenedor = document.getElementById('contenedorEditor');
-            
-            if(r.elevacionPersonalizada && r.elevacionPersonalizada.trim() !== "") {
+            if(r.elevacionPersonalizada) {
                 editor.innerHTML = r.elevacionPersonalizada;
             } else {
-                const hoy = getHoy();
                 editor.innerHTML = `
                     <div style="font-family: Arial; font-size: 11pt; line-height: 1.5;">
-                        <div style="text-align: right;">${hoy}.-</div>
+                        <div style="text-align: right;">${getHoy()}.-</div>
                         <p>MINISTERIO PUBLICO DE LA ACUSACION<br>FISCALIA DE FLAGRANCIA Y TURNO.<br>“ FISCAL”</p>
                         <p>A.U.O.P.<br>Cría. 2da.<br>Nota Nro.________/26.- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OBJETO: ELEVAR ACTUACIONES<br>Ref. CAUSA “${r.nroCausa || ''}”/26</p>
                         <p style="text-align: justify; text-indent: 3cm;">Por medio de la presente elevo a Usted, en referencia a actuaciones por un hecho caratulado a prima facie "${r.causaFinal || ''}", en donde resultare victima la llamada "${r.victima || ''}" e imputado el llamado "${r.nombreCompleto || ''}" para su conocimiento, consideración y demás fines legales que estime corresponder.-</p>
@@ -539,32 +539,22 @@
                         <div style="text-align: right;">${r.sumariante || ''}<br>COMISARIA 2° URII</div>
                     </div>`;
             }
-            contenedor.style.display = 'block';
-            window.scrollTo({top: contenedor.offsetTop, behavior: 'smooth'});
+            document.getElementById('contenedorEditor').style.display = 'block';
         }
 
         async function prepararImpresionElevacion() {
             const contenido = document.getElementById('editorElevacion').innerHTML;
-            const id = db[indexEdit].id;
-            await dbCloud.collection("registros").doc(id).update({ elevacionPersonalizada: contenido });
-            const area = document.getElementById('printArea');
-            area.innerHTML = `<div class="print-doc">${contenido}</div>`;
+            await dbCloud.collection("registros").doc(db[indexEdit].id).update({ elevacionPersonalizada: contenido });
+            document.getElementById('printArea').innerHTML = `<div class="print-doc">${contenido}</div>`;
             window.print();
         }
 
         function imprimir(tipo) {
-            const r = indexEdit !== null ? db[indexEdit] : db[db.length - 1];
-            if(!r) return alert("SIN DATOS PARA IMPRIMIR");
-            
-            if((tipo === 'acta' || tipo === 'insercion') && (!r.causaFinal || r.causaFinal.trim() === "")) {
-                return alert("ERROR: FALTA CALIFICACIÓN LEGAL FINAL.");
-            }
-
+            const r = indexEdit !== null ? db[indexEdit] : db[0];
+            if(!r) return;
             const area = document.getElementById('printArea');
             const fechaN = fF(r.fechaNac);
-            const fechaA = fF(r.fechaApreh);
             const hoy = getHoy();
-
             if(tipo === 'ficha') {
                 area.innerHTML = `<div class="print-ficha"><div>${r.nombreCompleto}</div><div style="margin-bottom:1.5em"></div><div>${r.padre}</div><div>${r.madre}</div><div>${r.nacionalidad}</div><div>${r.provincia}</div><div>${r.ciudad}</div><div>${fechaN} &nbsp; ${r.edad} AÑOS</div><div>D.N.I. Nº ${r.dni}</div><div style="margin-bottom:1.5em"></div><div>${r.domicilio}</div></div>`;
             }
@@ -613,7 +603,7 @@
                         <div class="p-firma" style="margin-top: 4cm;">SALUDA A UD. ATTE.<br><br><br>${r.sumariante}<br>COMISARIA 2° URII</div>
                     </div>`;
             }
-            else if(tipo === 'acta') {
+            else if(tipo === 'derechos') {
                 area.innerHTML = `
                     <div class="print-acta">
                         <div class="acta-titulo">ACTA DE CONOCIMIENTO DE DERECHOS DEL IMPUTADO</div>
@@ -629,7 +619,7 @@
                         
                         <p>Consultado sobre abogado defensor refiere que: <strong>SI, A POSTERIOR DESIGNARA UNO DE SU CONFIANZA</strong>.</p>
                         
-                        <p>Se le notifica que se encuentra imputado por el delito de “<strong>"${r.causaFinal}"</strong>” aprehendido el <strong>${fechaA}</strong>; a disposición del <strong>${r.fiscalia}</strong>, quien ordena que el mismo <strong>${r.orden}</strong>.</p>
+                        <p>Se le notifica que se encuentra imputado por el delito de “<strong>"${r.causaFinal}"</strong>” aprehendido el <strong>${fechaApreh}</strong>; a disposición del <strong>${r.fiscalia}</strong>, quien ordena que el mismo <strong>${r.orden}</strong>.</p>
                         
                         <p>En este acto se hace entrega de una copia de la presente acta al imputado.</p>
                         <div class="p-firma" style="margin-top:20px">${r.sumariante}<br>COMISARIA 2° URII</div>
@@ -665,58 +655,36 @@
             window.print();
         }
 
+
         async function exportarExcel() {
             const wb = new ExcelJS.Workbook();
             const sh = wb.addWorksheet('REGISTRO');
-            sh.addRow(["NOMBRE", "DNI", "CAUSA FINAL", "FISCALIA"]);
-            db.forEach(r => sh.addRow([r.nombreCompleto, r.dni, r.causaFinal, r.fiscalia]));
+            sh.addRow(["NOMBRE", "DNI", "CAUSA", "FECHA"]);
+            db.forEach(r => sh.addRow([r.nombreCompleto, r.dni, r.causaFinal, r.timestamp?r.timestamp.toDate():'']));
             const buffer = await wb.xlsx.writeBuffer();
-            saveAs(new Blob([buffer]), "BASE_COMISARIA.xlsx");
+            saveAs(new Blob([buffer]), "REGISTRO_CRIA2DA.xlsx");
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const fechaApreh = document.getElementById('fechaApreh');
-            if (fechaApreh && !fechaApreh.value) {
-                const hoy = new Date().toISOString().split('T')[0];
-                fechaApreh.value = hoy;
-            }
-        });
 
         document.getElementById('nombreCompleto').addEventListener('input', function(e) {
             const busqueda = e.target.value.toUpperCase();
             if (busqueda.length < 5) return; 
-
             const record = db.find(r => r.nombreCompleto && r.nombreCompleto.includes(busqueda));
-
             if (record) {
-                const camposAMemoria = [
-                    'dni', 'apodo', 'padre', 'madre', 'fechaNac', 
-                    'edad', 'estadoCivil', 'nacionalidad', 'domicilio', 'ciudad', 'provincia'
-                ];
-
-                camposAMemoria.forEach(campo => {
-                    const el = document.getElementById(campo);
-                    if (el && (!el.value || el.value === "SOLTERO" || el.value === "ARGENTINO" || el.value === "NO TIENE")) {
-                        el.value = record[campo] || el.value;
-                    }
-                });
-                e.target.style.border = "2px solid var(--success)";
-            } else {
-                e.target.style.border = "1px solid var(--border)";
-            }
+                e.target.style.border = "3px solid var(--danger)";
+                if(confirm("⚠️ REINCIDENTE DETECTADO. ¿Cargar sus datos automáticamente?")) cargar(db.indexOf(record));
+            } else { e.target.style.border = "1px solid var(--border)"; }
         });
 
         document.getElementById('fechaNac').addEventListener('change', function(e) {
             if (!e.target.value) return;
             const nac = new Date(e.target.value);
-            const hoy = new Date();
-            let edadCalculada = hoy.getFullYear() - nac.getFullYear();
-            const m = hoy.getMonth() - nac.getMonth();
-            if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) {
-                edadCalculada--;
-            }
-            document.getElementById('edad').value = edadCalculada;
+            const h = new Date();
+            let edad = h.getFullYear() - nac.getFullYear();
+            if (h.getMonth() < nac.getMonth() || (h.getMonth() === nac.getMonth() && h.getDate() < nac.getDate())) edad--;
+            document.getElementById('edad').value = edad;
         });
+
+        setInterval(renderTabla, 60000); // Actualiza tabla cada 1 minuto para el semáforo
     </script>
 </body>
 </html>
