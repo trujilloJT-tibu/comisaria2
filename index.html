@@ -311,7 +311,7 @@
                         <tr>
                             <th>APREHENDIDO</th>
                             <th>DNI</th>
-                            <th>⏱️ TIEMPO</th>
+                            <th>causaFinal</th>
                             <th class="check-cell">🩺</th>
                             <th class="check-cell">🏠</th>
                             <th class="check-cell">📜</th>
@@ -490,7 +490,7 @@
                     tr.innerHTML = `
                         <td style="font-weight:bold">${r.nombreCompleto || ''}</td>
                         <td>${r.dni || ''}</td>
-                        <td><span class="status-timer ${getStatusClass(r.timestamp)}">${getTiempo(r.timestamp)}</span></td>
+                        <td style="font-size: 0.75rem; color: var(--accent); font-weight: bold;">${r.causaFinal || ''}</td>
                         <td class="check-cell"><input type="checkbox" ${r.checkMed?'checked':''} onchange="actualizarCheck('${r.id}','checkMed',this.checked)"></td>
                         <td class="check-cell"><input type="checkbox" ${r.checkDom?'checked':''} onchange="actualizarCheck('${r.id}','checkDom',this.checked)"></td>
                         <td class="check-cell"><input type="checkbox" ${r.checkAnt?'checked':''} onchange="actualizarCheck('${r.id}','checkAnt',this.checked)"></td>
@@ -619,7 +619,7 @@
                         
                         <p>Consultado sobre abogado defensor refiere que: <strong>SI, A POSTERIOR DESIGNARA UNO DE SU CONFIANZA</strong>.</p>
                         
-                        <p>Se le notifica que se encuentra imputado por el delito de “<strong>"${r.causaFinal}"</strong>” aprehendido el <strong>${fechaApreh}</strong>; a disposición del <strong>${r.fiscalia}</strong>, quien ordena que el mismo <strong>${r.orden}</strong>.</p>
+                        <p>Se le notifica que se encuentra imputado por el delito de “<strong>${r.causaFinal}</strong>” aprehendido el “<strong>${fF(r.fechaApreh)}</strong>”; a disposición del <strong>${r.fiscalia}</strong>, quien ordena que el mismo <strong>${r.orden}</strong>.</p>
                         
                         <p>En este acto se hace entrega de una copia de la presente acta al imputado.</p>
                         <div class="p-firma" style="margin-top:20px">${r.sumariante}<br>COMISARIA 2° URII</div>
